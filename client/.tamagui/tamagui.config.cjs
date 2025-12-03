@@ -33023,28 +33023,25 @@ __name(getValue, "getValue");
 
 // src/config/tamagui.config.ts
 var ravenColors = {
-  // Core colors
   background: "#121212",
   cardSurface: "#1E1E1E",
   primaryAccent: "#2D60FF",
   textPrimary: "#FFFFFF",
   textSecondary: "#B0B0B0",
   border: "#333333",
-  // Extended palette
   success: "#22C55E",
   warning: "#F59E0B",
   error: "#EF4444",
   info: "#3B82F6",
-  // Accent variations
   primaryAccentLight: "#4B7BFF",
   primaryAccentDark: "#1A4AD4",
-  // Surface variations
   surfaceElevated: "#252525",
   surfacePressed: "#2A2A2A"
 };
 var interFont = createInterFont({
   face: {
     400: { normal: "Inter_400Regular" },
+    500: { normal: "Inter_400Regular" },
     600: { normal: "Inter_600SemiBold" },
     700: { normal: "Inter_600SemiBold" },
     800: { normal: "Inter_800ExtraBold" }
@@ -33054,7 +33051,6 @@ var tokens2 = (0, import_core23.createTokens)({
   ...tokens,
   color: {
     ...tokens.color,
-    // Raven design system colors
     ravenBackground: ravenColors.background,
     ravenCard: ravenColors.cardSurface,
     ravenPrimary: ravenColors.primaryAccent,
@@ -33099,7 +33095,6 @@ var ravenDarkTheme = {
   borderColorFocus: ravenColors.primaryAccent,
   borderColorPress: ravenColors.border,
   placeholderColor: ravenColors.textSecondary,
-  // Primary button colors
   blue1: ravenColors.primaryAccentDark,
   blue2: ravenColors.primaryAccent,
   blue3: ravenColors.primaryAccentLight,
@@ -33139,10 +33134,10 @@ var media = createMedia({
   lg: { maxWidth: 1280 },
   xl: { maxWidth: 1420 },
   xxl: { maxWidth: 1600 },
-  gtXs: { minWidth: 660 + 1 },
-  gtSm: { minWidth: 800 + 1 },
-  gtMd: { minWidth: 1020 + 1 },
-  gtLg: { minWidth: 1280 + 1 },
+  gtXs: { minWidth: 661 },
+  gtSm: { minWidth: 801 },
+  gtMd: { minWidth: 1021 },
+  gtLg: { minWidth: 1281 },
   short: { maxHeight: 820 },
   tall: { minHeight: 820 },
   hoverNone: { hover: "none" },

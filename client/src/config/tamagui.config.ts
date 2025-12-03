@@ -5,47 +5,46 @@ import { themes as tamaguiThemes, tokens as tamaguiTokens } from '@tamagui/theme
 import { createMedia } from '@tamagui/react-native-media-driver'
 import { createAnimations } from '@tamagui/animations-react-native'
 
-// Raven Design System Colors
+// ============================================
+// RAVEN DESIGN SYSTEM COLORS (Dark Theme)
+// ============================================
 const ravenColors = {
-  // Core colors
   background: '#121212',
   cardSurface: '#1E1E1E',
   primaryAccent: '#2D60FF',
   textPrimary: '#FFFFFF',
   textSecondary: '#B0B0B0',
   border: '#333333',
-  
-  // Extended palette
   success: '#22C55E',
   warning: '#F59E0B',
   error: '#EF4444',
   info: '#3B82F6',
-  
-  // Accent variations
   primaryAccentLight: '#4B7BFF',
   primaryAccentDark: '#1A4AD4',
-  
-  // Surface variations
   surfaceElevated: '#252525',
   surfacePressed: '#2A2A2A',
 }
 
-// Create Inter font with specific weights
+// ============================================
+// FONTS
+// ============================================
 const interFont = createInterFont({
   face: {
     400: { normal: 'Inter_400Regular' },
+    500: { normal: 'Inter_400Regular' },
     600: { normal: 'Inter_600SemiBold' },
     700: { normal: 'Inter_600SemiBold' },
     800: { normal: 'Inter_800ExtraBold' },
   },
 })
 
-// Custom tokens extending Tamagui defaults
+// ============================================
+// TOKENS
+// ============================================
 const tokens = createTokens({
   ...tamaguiTokens,
   color: {
     ...tamaguiTokens.color,
-    // Raven design system colors
     ravenBackground: ravenColors.background,
     ravenCard: ravenColors.cardSurface,
     ravenPrimary: ravenColors.primaryAccent,
@@ -74,7 +73,9 @@ const tokens = createTokens({
   },
 })
 
-// Raven dark theme
+// ============================================
+// THEME
+// ============================================
 const ravenDarkTheme = {
   background: ravenColors.background,
   backgroundHover: ravenColors.surfaceElevated,
@@ -82,21 +83,16 @@ const ravenDarkTheme = {
   backgroundFocus: ravenColors.surfaceElevated,
   backgroundStrong: ravenColors.cardSurface,
   backgroundTransparent: 'transparent',
-  
   color: ravenColors.textPrimary,
   colorHover: ravenColors.textPrimary,
   colorPress: ravenColors.textSecondary,
   colorFocus: ravenColors.textPrimary,
   colorTransparent: 'transparent',
-  
   borderColor: ravenColors.border,
   borderColorHover: ravenColors.primaryAccent,
   borderColorFocus: ravenColors.primaryAccent,
   borderColorPress: ravenColors.border,
-  
   placeholderColor: ravenColors.textSecondary,
-  
-  // Primary button colors
   blue1: ravenColors.primaryAccentDark,
   blue2: ravenColors.primaryAccent,
   blue3: ravenColors.primaryAccentLight,
@@ -111,6 +107,9 @@ const ravenDarkTheme = {
   blue12: ravenColors.textPrimary,
 }
 
+// ============================================
+// ANIMATIONS
+// ============================================
 const animations = createAnimations({
   fast: {
     type: 'spring',
@@ -131,6 +130,9 @@ const animations = createAnimations({
   },
 })
 
+// ============================================
+// MEDIA QUERIES
+// ============================================
 const media = createMedia({
   xs: { maxWidth: 660 },
   sm: { maxWidth: 800 },
@@ -138,16 +140,19 @@ const media = createMedia({
   lg: { maxWidth: 1280 },
   xl: { maxWidth: 1420 },
   xxl: { maxWidth: 1600 },
-  gtXs: { minWidth: 660 + 1 },
-  gtSm: { minWidth: 800 + 1 },
-  gtMd: { minWidth: 1020 + 1 },
-  gtLg: { minWidth: 1280 + 1 },
+  gtXs: { minWidth: 661 },
+  gtSm: { minWidth: 801 },
+  gtMd: { minWidth: 1021 },
+  gtLg: { minWidth: 1281 },
   short: { maxHeight: 820 },
   tall: { minHeight: 820 },
   hoverNone: { hover: 'none' },
   pointerCoarse: { pointer: 'coarse' },
 })
 
+// ============================================
+// CREATE TAMAGUI CONFIG
+// ============================================
 const tamaguiConfig = createTamagui({
   tokens,
   themes: {
@@ -167,7 +172,7 @@ const tamaguiConfig = createTamagui({
 
 export default tamaguiConfig
 
-// Raven design constants for easy access
+// Legacy exports for backward compatibility
 export const RAVEN_COLORS = ravenColors
 export const RAVEN_SPACING = {
   xs: 4,

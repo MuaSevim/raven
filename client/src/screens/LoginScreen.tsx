@@ -1,195 +1,226 @@
 import React, { useState } from 'react';
-import { YStack, XStack, Text, Button, Input, Image } from 'tamagui';
+import { Alert } from 'react-native';
+import { YStack, XStack, Text, Image, ScrollView, Separator } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { RAVEN_COLORS, RAVEN_RADIUS } from '../config/tamagui.config';
+import { TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-// Import social icons
-const ravenLogo = require('../../assets/images/raven-logo-black.png');
-const appleIcon = require('../../assets/images/apple-icon.png');
-const metaIcon = require('../../assets/images/meta-icon.png');
-const googleIcon = require('../../assets/images/google-icon.png');
+// Design System
+import {
+  RAVEN_LIGHT,
+  RAVEN_ASSETS,
+  RAVEN_TYPOGRAPHY,
+  RAVEN_DIMENSIONS,
+  RAVEN_SPACING,
+} from '../config/theme.config';
 
+// Constants
+import { DUMMY_AUTH } from '../config/constants';
+
+// Reusable Components
+import {
+  SocialButton,
+  RavenInput,
+  RavenButton,
+} from '../components';
+
+// Navigation Types
+import { RootStackParamList } from '../../App';
+
+type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+
+/**
+ * LoginScreen - Main authentication screen
+ * Uses Raven Light Theme design system
+ */
 export const LoginScreen: React.FC = () => {
+  const navigation = useNavigation<LoginScreenNavigationProp>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // ============================================
+  // HANDLERS
+  // ============================================
   const handleLogin = () => {
-    console.log('Login pressed', { email, password });
+    // Validate inputs
+    if (!email.trim() || !password.trim()) {
+      Alert.alert('Error', 'Please enter both email and password.');
+      return;
+    }
+
+    // Check against dummy credentials
+    if (email === DUMMY_AUTH.email && password === DUMMY_AUTH.password) {
+      // Success - Navigate to Welcome
+      navigation.replace('Welcome');
+    } else {
+      // Failed - Show error
+      Alert.alert(
+        'Login Failed',
+        'Invalid email or password. Please try again.'
+      );
+    }
   };
 
   const handleSignUp = () => {
-    console.log('Sign up pressed');
+    navigation.navigate('SignUp');
   };
 
+  const handleSocialLogin = (provider: string) => {
+    console.log(`${provider} login pressed`);
+    Alert.alert('Coming Soon', `${provider} login will be available soon!`);
+  };
+
+  // ============================================
+  // RENDER
+  // ============================================
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
-      <YStack flex={1} padding="$6" justifyContent="center">
-        {/* Logo / Brand */}
-        <YStack alignItems="center" marginBottom="$6">
-          {/* Raven Bird Logo */}
-          <Image
-            source={ravenLogo}
-            width={80}
-            height={80}
-            resizeMode="contain"
-            marginBottom="$2"
-          />
-          
-          <Text
-            fontSize={32}
-            fontWeight="800"
-            color="#000000"
-            letterSpacing={4}
-          >
-            RAVEN
-          </Text>
-          <Text
-            fontSize={14}
-            color="#666666"
-            marginTop="$1"
-            fontStyle="italic"
-          >
-            "Travel for free"
-          </Text>
-        </YStack>
-
-        {/* Sign In Header */}
-        <Text
-          fontSize={24}
-          fontWeight="600"
-          color="#000000"
-          textAlign="center"
-          marginBottom="$6"
+    <SafeAreaView style={{ flex: 1, backgroundColor: RAVEN_LIGHT.background }}>
+      <ScrollView
+        flex={1}
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <YStack
+          flex={1}
+          paddingHorizontal={RAVEN_SPACING.screenPadding}
+          paddingTop="$8"
+          paddingBottom="$4"
         >
-          Sign In
-        </Text>
+          {/* ========== HEADER SECTION ========== */}
+          <YStack alignItems="center" marginBottom="$6">
+            {/* Raven Logo */}
+            <Image
+              source={RAVEN_ASSETS.logo}
+              width={RAVEN_DIMENSIONS.logoSize}
+              height={RAVEN_DIMENSIONS.logoSize}
+              resizeMode="contain"
+            />
 
-        {/* Login Form */}
-        <YStack space="$4" width="100%">
-          <Input
-            size="$5"
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            backgroundColor="#F5F5F5"
-            borderColor="#E0E0E0"
-            borderWidth={1}
-            borderRadius={RAVEN_RADIUS.input}
-            color="#000000"
-            placeholderTextColor="#999999"
-            paddingHorizontal="$4"
-            height={56}
-          />
-
-          <Input
-            size="$5"
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            backgroundColor="#F5F5F5"
-            borderColor="#E0E0E0"
-            borderWidth={1}
-            borderRadius={RAVEN_RADIUS.input}
-            color="#000000"
-            placeholderTextColor="#999999"
-            paddingHorizontal="$4"
-            height={56}
-          />
-
-          {/* Continue Button */}
-          <Button
-            size="$5"
-            height={50}
-            backgroundColor="#1A1A1A"
-            borderRadius={RAVEN_RADIUS.button}
-            marginTop="$4"
-            onPress={handleLogin}
-            pressStyle={{
-              backgroundColor: '#333333',
-            }}
-          >
-            <Text color="#FFFFFF" fontWeight="600" fontSize={16}>
-              Continue
+            {/* Brand Name */}
+            <Text
+              fontSize={RAVEN_TYPOGRAPHY.xxl}
+              fontWeight={RAVEN_TYPOGRAPHY.bold}
+              color={RAVEN_LIGHT.primaryText}
+              letterSpacing={3}
+              marginTop="$2"
+            >
+              RAVEN
             </Text>
-          </Button>
+
+            {/* Tagline */}
+            <Text
+              fontSize={RAVEN_TYPOGRAPHY.md}
+              color={RAVEN_LIGHT.secondaryText}
+              marginTop="$1"
+              fontStyle="italic"
+            >
+              "Travel for free"
+            </Text>
+          </YStack>
+
+          {/* ========== SIGN IN TITLE ========== */}
+          <Text
+            fontSize={RAVEN_TYPOGRAPHY.xl}
+            fontWeight={RAVEN_TYPOGRAPHY.semibold}
+            color={RAVEN_LIGHT.primaryText}
+            textAlign="center"
+            marginBottom="$6"
+          >
+            Sign In
+          </Text>
+
+          {/* ========== EMAIL/PASSWORD FORM ========== */}
+          <YStack space="$3" width="100%">
+            <RavenInput
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+
+            <RavenInput
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+
+            {/* Continue Button */}
+            <YStack marginTop="$4">
+              <RavenButton onPress={handleLogin}>
+                Continue
+              </RavenButton>
+            </YStack>
+          </YStack>
+
+          {/* ========== OR DIVIDER ========== */}
+          <XStack
+            alignItems="center"
+            justifyContent="center"
+            marginVertical="$5"
+            width="100%"
+          >
+            <Separator borderColor={RAVEN_LIGHT.divider} flex={1} />
+            <Text
+              color={RAVEN_LIGHT.secondaryText}
+              fontSize={RAVEN_TYPOGRAPHY.sm}
+              paddingHorizontal="$3"
+            >
+              OR
+            </Text>
+            <Separator borderColor={RAVEN_LIGHT.divider} flex={1} />
+          </XStack>
+
+          {/* ========== SOCIAL LOGIN SECTION ========== */}
+          <YStack alignItems="center">
+            <Text
+              color={RAVEN_LIGHT.secondaryText}
+              fontSize={RAVEN_TYPOGRAPHY.sm}
+              marginBottom="$4"
+            >
+              continue with
+            </Text>
+
+            <XStack justifyContent="center" space="$6">
+              <SocialButton
+                icon={RAVEN_ASSETS.appleIcon}
+                onPress={() => handleSocialLogin('Apple')}
+              />
+              <SocialButton
+                icon={RAVEN_ASSETS.metaIcon}
+                onPress={() => handleSocialLogin('Meta')}
+              />
+              <SocialButton
+                icon={RAVEN_ASSETS.googleIcon}
+                onPress={() => handleSocialLogin('Google')}
+              />
+            </XStack>
+          </YStack>
+
+          {/* ========== SPACER ========== */}
+          <YStack flex={1} minHeight="$4" />
+
+          {/* ========== SIGN UP LINK ========== */}
+          <XStack justifyContent="center" paddingBottom="$4">
+            <Text color={RAVEN_LIGHT.secondaryText} fontSize={RAVEN_TYPOGRAPHY.sm}>
+              Don't have an account yet?{' '}
+            </Text>
+            <TouchableOpacity onPress={handleSignUp} activeOpacity={0.7}>
+              <Text
+                color={RAVEN_LIGHT.primaryText}
+                fontWeight={RAVEN_TYPOGRAPHY.semibold}
+                fontSize={RAVEN_TYPOGRAPHY.sm}
+                textDecorationLine="underline"
+              >
+                Sign up
+              </Text>
+            </TouchableOpacity>
+          </XStack>
         </YStack>
-
-        {/* OR Divider */}
-        <XStack alignItems="center" marginVertical="$6">
-          <YStack flex={1} height={1} backgroundColor="#E0E0E0" />
-          <Text color="#999999" marginHorizontal="$4" fontSize={14}>
-            OR
-          </Text>
-          <YStack flex={1} height={1} backgroundColor="#E0E0E0" />
-        </XStack>
-
-        {/* Social Login */}
-        <Text color="#666666" textAlign="center" marginBottom="$4">
-          continue with
-        </Text>
-        
-        <XStack justifyContent="center" space="$8">
-          <Button
-            circular
-            size="$5"
-            backgroundColor="transparent"
-            onPress={() => console.log('Apple login')}
-            pressStyle={{ opacity: 0.7 }}
-          >
-            <Image
-              source={appleIcon}
-              width={32}
-              height={32}
-              resizeMode="contain"
-            />
-          </Button>
-          
-          <Button
-            circular
-            size="$5"
-            backgroundColor="transparent"
-            onPress={() => console.log('Meta login')}
-            pressStyle={{ opacity: 0.7 }}
-          >
-            <Image
-              source={metaIcon}
-              width={32}
-              height={32}
-              resizeMode="contain"
-            />
-          </Button>
-          
-          <Button
-            circular
-            size="$5"
-            backgroundColor="transparent"
-            onPress={() => console.log('Google login')}
-            pressStyle={{ opacity: 0.7 }}
-          >
-            <Image
-              source={googleIcon}
-              width={32}
-              height={32}
-              resizeMode="contain"
-            />
-          </Button>
-        </XStack>
-
-        {/* Sign Up Link */}
-        <XStack justifyContent="center" marginTop="$8">
-          <Text color="#666666" fontSize={14}>
-            Don't have an account yet?{' '}
-          </Text>
-          <Button chromeless padding={0} onPress={handleSignUp}>
-            <Text color="#000000" fontWeight="600" fontSize={14} textDecorationLine="underline">
-              Sign up
-            </Text>
-          </Button>
-        </XStack>
-      </YStack>
+      </ScrollView>
     </SafeAreaView>
   );
 };
