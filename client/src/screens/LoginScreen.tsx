@@ -3,6 +3,12 @@ import { YStack, XStack, Text, Button, Input, Image } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RAVEN_COLORS, RAVEN_RADIUS } from '../config/tamagui.config';
 
+// Import social icons
+const ravenLogo = require('../../assets/images/raven-logo-black.png');
+const appleIcon = require('../../assets/images/apple-icon.png');
+const metaIcon = require('../../assets/images/meta-icon.png');
+const googleIcon = require('../../assets/images/google-icon.png');
+
 export const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,24 +22,30 @@ export const LoginScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: RAVEN_COLORS.background }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
       <YStack flex={1} padding="$6" justifyContent="center">
         {/* Logo / Brand */}
         <YStack alignItems="center" marginBottom="$6">
-          {/* Raven Bird Icon */}
-          <Text fontSize={60} marginBottom="$2">🦅</Text>
+          {/* Raven Bird Logo */}
+          <Image
+            source={ravenLogo}
+            width={80}
+            height={80}
+            resizeMode="contain"
+            marginBottom="$2"
+          />
           
           <Text
             fontSize={32}
             fontWeight="800"
-            color="$ravenTextPrimary"
+            color="#000000"
             letterSpacing={4}
           >
             RAVEN
           </Text>
           <Text
             fontSize={14}
-            color="$ravenTextSecondary"
+            color="#666666"
             marginTop="$1"
             fontStyle="italic"
           >
@@ -45,7 +57,7 @@ export const LoginScreen: React.FC = () => {
         <Text
           fontSize={24}
           fontWeight="600"
-          color="$ravenTextPrimary"
+          color="#000000"
           textAlign="center"
           marginBottom="$6"
         >
@@ -61,13 +73,14 @@ export const LoginScreen: React.FC = () => {
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
-            backgroundColor="$ravenCard"
-            borderColor="$ravenBorder"
+            backgroundColor="#F5F5F5"
+            borderColor="#E0E0E0"
             borderWidth={1}
             borderRadius={RAVEN_RADIUS.input}
-            color="$ravenTextPrimary"
-            placeholderTextColor={RAVEN_COLORS.textSecondary}
+            color="#000000"
+            placeholderTextColor="#999999"
             paddingHorizontal="$4"
+            height={56}
           />
 
           <Input
@@ -76,28 +89,29 @@ export const LoginScreen: React.FC = () => {
             value={password}
             onChangeText={setPassword}
             secureTextEntry
-            backgroundColor="$ravenCard"
-            borderColor="$ravenBorder"
+            backgroundColor="#F5F5F5"
+            borderColor="#E0E0E0"
             borderWidth={1}
             borderRadius={RAVEN_RADIUS.input}
-            color="$ravenTextPrimary"
-            placeholderTextColor={RAVEN_COLORS.textSecondary}
+            color="#000000"
+            placeholderTextColor="#999999"
             paddingHorizontal="$4"
+            height={56}
           />
 
           {/* Continue Button */}
           <Button
             size="$5"
             height={50}
-            backgroundColor="$ravenCard"
+            backgroundColor="#1A1A1A"
             borderRadius={RAVEN_RADIUS.button}
             marginTop="$4"
             onPress={handleLogin}
             pressStyle={{
-              backgroundColor: '$ravenBorder',
+              backgroundColor: '#333333',
             }}
           >
-            <Text color="$ravenTextPrimary" fontWeight="600" fontSize={16}>
+            <Text color="#FFFFFF" fontWeight="600" fontSize={16}>
               Continue
             </Text>
           </Button>
@@ -105,26 +119,32 @@ export const LoginScreen: React.FC = () => {
 
         {/* OR Divider */}
         <XStack alignItems="center" marginVertical="$6">
-          <YStack flex={1} height={1} backgroundColor="$ravenBorder" />
-          <Text color="$ravenTextSecondary" marginHorizontal="$4" fontSize={14}>
+          <YStack flex={1} height={1} backgroundColor="#E0E0E0" />
+          <Text color="#999999" marginHorizontal="$4" fontSize={14}>
             OR
           </Text>
-          <YStack flex={1} height={1} backgroundColor="$ravenBorder" />
+          <YStack flex={1} height={1} backgroundColor="#E0E0E0" />
         </XStack>
 
         {/* Social Login */}
-        <Text color="$ravenTextSecondary" textAlign="center" marginBottom="$4">
+        <Text color="#666666" textAlign="center" marginBottom="$4">
           continue with
         </Text>
         
-        <XStack justifyContent="center" space="$6">
+        <XStack justifyContent="center" space="$8">
           <Button
             circular
             size="$5"
             backgroundColor="transparent"
             onPress={() => console.log('Apple login')}
+            pressStyle={{ opacity: 0.7 }}
           >
-            <Text fontSize={28}></Text>
+            <Image
+              source={appleIcon}
+              width={32}
+              height={32}
+              resizeMode="contain"
+            />
           </Button>
           
           <Button
@@ -132,8 +152,14 @@ export const LoginScreen: React.FC = () => {
             size="$5"
             backgroundColor="transparent"
             onPress={() => console.log('Meta login')}
+            pressStyle={{ opacity: 0.7 }}
           >
-            <Text fontSize={28}>Ⓜ️</Text>
+            <Image
+              source={metaIcon}
+              width={32}
+              height={32}
+              resizeMode="contain"
+            />
           </Button>
           
           <Button
@@ -141,18 +167,24 @@ export const LoginScreen: React.FC = () => {
             size="$5"
             backgroundColor="transparent"
             onPress={() => console.log('Google login')}
+            pressStyle={{ opacity: 0.7 }}
           >
-            <Text fontSize={28}>G</Text>
+            <Image
+              source={googleIcon}
+              width={32}
+              height={32}
+              resizeMode="contain"
+            />
           </Button>
         </XStack>
 
         {/* Sign Up Link */}
         <XStack justifyContent="center" marginTop="$8">
-          <Text color="$ravenTextSecondary" fontSize={14}>
+          <Text color="#666666" fontSize={14}>
             Don't have an account yet?{' '}
           </Text>
           <Button chromeless padding={0} onPress={handleSignUp}>
-            <Text color="$ravenTextPrimary" fontWeight="600" fontSize={14} textDecorationLine="underline">
+            <Text color="#000000" fontWeight="600" fontSize={14} textDecorationLine="underline">
               Sign up
             </Text>
           </Button>
