@@ -7,3 +7,4 @@ export { SocialButton } from './SocialButton';
 export { RavenInput } from './RavenInput';
 export { RavenButton } from './RavenButton';
 export { ScreenHeader } from './ScreenHeader';
+export { ShipmentCard } from './ShipmentCard';

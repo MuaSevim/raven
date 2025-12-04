@@ -1,5 +1,6 @@
 import React from 'react';
-import { YStack, Text, Image } from 'tamagui';
+import { TouchableOpacity } from 'react-native';
+import { YStack, XStack, Text, Image, ScrollView } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -9,8 +10,8 @@ import {
   RAVEN_LIGHT,
   RAVEN_ASSETS,
   RAVEN_TYPOGRAPHY,
-  RAVEN_DIMENSIONS,
   RAVEN_SPACING,
+  RAVEN_RADIUS,
 } from '../config/theme.config';
 
 // Reusable Components
@@ -21,90 +22,179 @@ import { RootStackParamList } from '../../App';
 
 type WelcomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Welcome'>;
 
+// ============================================
+// ROLE CARD COMPONENT (Inline - used only here)
+// ============================================
+interface RoleCardProps {
+  image: any;
+  title: string;
+  subtitle: string;
+  onPress: () => void;
+  highlighted?: boolean;
+}
+
+const RoleCard: React.FC<RoleCardProps> = ({
+  image,
+  title,
+  subtitle,
+  onPress,
+  highlighted = false,
+}) => (
+  <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
+    <YStack
+      backgroundColor="#F8F8F8"
+      borderRadius={RAVEN_RADIUS.card}
+      overflow="hidden"
+      borderWidth={highlighted ? 2 : 1}
+      borderColor={highlighted ? RAVEN_LIGHT.primaryText : RAVEN_LIGHT.border}
+    >
+      {/* Image */}
+      <Image
+        source={image}
+        width="100%"
+        height={160}
+        resizeMode="cover"
+      />
+
+      {/* Text Content */}
+      <YStack padding="$4">
+        <Text
+          fontSize={RAVEN_TYPOGRAPHY.lg}
+          fontWeight={highlighted ? RAVEN_TYPOGRAPHY.bold : RAVEN_TYPOGRAPHY.semibold}
+          color={RAVEN_LIGHT.primaryText}
+          marginBottom="$1"
+        >
+          {title}
+        </Text>
+        <Text
+          fontSize={RAVEN_TYPOGRAPHY.sm}
+          color={RAVEN_LIGHT.secondaryText}
+        >
+          {subtitle}
+        </Text>
+      </YStack>
+    </YStack>
+  </TouchableOpacity>
+);
+
 /**
- * WelcomeScreen - Shown after successful login/signup
- * Simple welcome message with option to continue to main app
+ * WelcomeScreen - Role Selection after signup
+ * Users choose between "Send" or "Travel" paths
  */
 export const WelcomeScreen: React.FC = () => {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
 
-  const handleContinue = () => {
-    // In a real app, this would navigate to the main app (tabs, home, etc.)
-    console.log('Continue to main app');
-    // For now, just log and stay on this screen
-    // navigation.navigate('Home'); // When Home screen exists
+  const handleSendPath = () => {
+    // Navigate to Create Shipment flow
+    navigation.navigate('CreateShipment');
   };
 
-  const handleLogout = () => {
-    navigation.replace('Login');
+  const handleTravelPath = () => {
+    // Navigate to Traveler Feed
+    navigation.navigate('TravelerFeed');
+  };
+
+  const handleExploreMore = () => {
+    // Future: Navigate to onboarding or feature tour
+    console.log('Explore more of Raven');
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: RAVEN_LIGHT.background }}>
-      <YStack
+      <ScrollView
         flex={1}
-        paddingHorizontal={RAVEN_SPACING.screenPadding}
-        justifyContent="center"
-        alignItems="center"
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}
       >
-        {/* Logo */}
-        <Image
-          source={RAVEN_ASSETS.logo}
-          width={RAVEN_DIMENSIONS.logoSize * 1.5}
-          height={RAVEN_DIMENSIONS.logoSize * 1.5}
-          resizeMode="contain"
-        />
-
-        {/* Welcome Text */}
-        <Text
-          fontSize={RAVEN_TYPOGRAPHY.xxxl}
-          fontWeight={RAVEN_TYPOGRAPHY.bold}
-          color={RAVEN_LIGHT.primaryText}
-          marginTop="$6"
-          textAlign="center"
-        >
-          Welcome to Raven!
-        </Text>
-
-        <Text
-          fontSize={RAVEN_TYPOGRAPHY.md}
-          color={RAVEN_LIGHT.secondaryText}
-          marginTop="$3"
-          textAlign="center"
-          paddingHorizontal="$4"
-        >
-          You're all set. Start exploring trips and connect with travelers around the world.
-        </Text>
-
-        {/* Success Icon */}
         <YStack
-          width={80}
-          height={80}
-          borderRadius={40}
-          backgroundColor={RAVEN_LIGHT.success}
-          alignItems="center"
-          justifyContent="center"
-          marginTop="$8"
+          flex={1}
+          paddingHorizontal={RAVEN_SPACING.screenPadding}
+          paddingTop="$4"
+          paddingBottom="$6"
         >
-          <Text fontSize={40} color={RAVEN_LIGHT.buttonPrimaryText}>
-            ✓
+          {/* ========== HEADER ========== */}
+          <Text
+            fontSize={RAVEN_TYPOGRAPHY.xl}
+            fontWeight={RAVEN_TYPOGRAPHY.semibold}
+            color={RAVEN_LIGHT.primaryText}
+            textAlign="center"
+            marginBottom="$6"
+          >
+            Welcome to Raven
           </Text>
+
+          {/* ========== ROLE CARDS ========== */}
+          <YStack space="$4" flex={1}>
+            {/* Option 1: Travel (Primary Focus) */}
+            <RoleCard
+              image={RAVEN_ASSETS.backpackShot}
+              title="Travel while making money"
+              subtitle="Earn by delivering packages on your trips"
+              onPress={handleTravelPath}
+              highlighted
+            />
+
+            {/* Option 2: Send */}
+            <RoleCard
+              image={RAVEN_ASSETS.packageShot}
+              title="Send your packages reliably for cheap!"
+              subtitle="Connect with travelers to send your items"
+              onPress={handleSendPath}
+            />
+          </YStack>
+
+          {/* ========== EXPLORE BUTTON ========== */}
+          <YStack paddingTop="$6">
+            <RavenButton variant="outline" onPress={handleExploreMore}>
+              Explore more of Raven
+            </RavenButton>
+          </YStack>
         </YStack>
+      </ScrollView>
 
-        {/* Spacer */}
-        <YStack flex={1} minHeight="$8" />
-
-        {/* Action Buttons */}
-        <YStack width="100%" space="$3" paddingBottom="$6">
-          <RavenButton onPress={handleContinue}>
-            Get Started
-          </RavenButton>
-
-          <RavenButton variant="outline" onPress={handleLogout}>
-            Log Out
-          </RavenButton>
-        </YStack>
-      </YStack>
+      {/* ========== BOTTOM TAB BAR (Static Preview) ========== */}
+      <XStack
+        height={70}
+        backgroundColor={RAVEN_LIGHT.background}
+        borderTopWidth={1}
+        borderTopColor={RAVEN_LIGHT.border}
+        alignItems="center"
+        justifyContent="space-around"
+        paddingHorizontal="$4"
+      >
+        <TabBarItem icon="home" label="Home" active />
+        <TabBarItem icon="add-circle" label="Deliveries" />
+        <TabBarItem icon="location" label="Trips" />
+        <TabBarItem icon="person" label="Profile" />
+      </XStack>
     </SafeAreaView>
   );
 };
+
+// ============================================
+// TAB BAR ITEM (Inline - preview only)
+// ============================================
+import { Ionicons } from '@expo/vector-icons';
+
+interface TabBarItemProps {
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  active?: boolean;
+}
+
+const TabBarItem: React.FC<TabBarItemProps> = ({ icon, label, active = false }) => (
+  <YStack alignItems="center" space="$1">
+    <Ionicons
+      name={active ? icon : (`${icon}-outline` as keyof typeof Ionicons.glyphMap)}
+      size={24}
+      color={active ? RAVEN_LIGHT.primaryText : RAVEN_LIGHT.secondaryText}
+    />
+    <Text
+      fontSize={RAVEN_TYPOGRAPHY.xs}
+      color={active ? RAVEN_LIGHT.primaryText : RAVEN_LIGHT.secondaryText}
+      fontWeight={active ? RAVEN_TYPOGRAPHY.medium : RAVEN_TYPOGRAPHY.regular}
+    >
+      {label}
+    </Text>
+  </YStack>
+);

@@ -2,4 +2,7 @@ export { LoginScreen } from './LoginScreen';
 export { SignUpScreen } from './SignUpScreen';
 export { VerificationScreen } from './VerificationScreen';
 export { WelcomeScreen } from './WelcomeScreen';
+export { TravelerFeedScreen } from './TravelerFeedScreen';
+export { ShipmentDetailsScreen } from './ShipmentDetailsScreen';
+export { CreateShipmentScreen } from './CreateShipmentScreen';
 export { ChatScreen } from './ChatScreen';

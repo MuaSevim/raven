@@ -101,4 +101,7 @@ export const RAVEN_ASSETS = {
   appleIcon: require('../../assets/images/apple-icon.png'),
   metaIcon: require('../../assets/images/meta-icon.png'),
   googleIcon: require('../../assets/images/google-icon.png'),
+  // Welcome Screen Role Cards
+  backpackShot: require('../../assets/images/backpack-shot.png'),
+  packageShot: require('../../assets/images/package-shot.png'),
 } as const;

@@ -14,7 +14,16 @@ import * as SplashScreen from 'expo-splash-screen';
 
 import tamaguiConfig from './src/config/tamagui.config';
 import { RAVEN_LIGHT } from './src/config/theme.config';
-import { LoginScreen, SignUpScreen, VerificationScreen, WelcomeScreen } from './src/screens';
+import {
+  LoginScreen,
+  SignUpScreen,
+  VerificationScreen,
+  WelcomeScreen,
+  TravelerFeedScreen,
+  ShipmentDetailsScreen,
+  CreateShipmentScreen,
+} from './src/screens';
+import { Shipment } from './src/data/mockData';
 
 // ============================================
 // NAVIGATION TYPES
@@ -24,6 +33,9 @@ export type RootStackParamList = {
   SignUp: undefined;
   Verification: undefined;
   Welcome: undefined;
+  TravelerFeed: undefined;
+  ShipmentDetails: { shipment: Shipment };
+  CreateShipment: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -65,6 +77,17 @@ export default function App() {
             <Stack.Screen name="SignUp" component={SignUpScreen} />
             <Stack.Screen name="Verification" component={VerificationScreen} />
             <Stack.Screen name="Welcome" component={WelcomeScreen} />
+            <Stack.Screen name="TravelerFeed" component={TravelerFeedScreen} />
+            <Stack.Screen 
+              name="ShipmentDetails" 
+              component={ShipmentDetailsScreen}
+              options={{ animation: 'slide_from_bottom' }}
+            />
+            <Stack.Screen 
+              name="CreateShipment" 
+              component={CreateShipmentScreen}
+              options={{ animation: 'slide_from_bottom' }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>
