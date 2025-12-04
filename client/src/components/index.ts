@@ -8,3 +8,5 @@ export { RavenInput } from './RavenInput';
 export { RavenButton } from './RavenButton';
 export { ScreenHeader } from './ScreenHeader';
 export { ShipmentCard } from './ShipmentCard';
+export { SearchableSelect } from './SearchableSelect';
+export type { SelectOption } from './SearchableSelect';

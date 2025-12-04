@@ -1,5 +1,6 @@
 import React from 'react';
-import { Input, YStack, Text } from 'tamagui';
+import { TextInput, View, StyleSheet } from 'react-native';
+import { YStack, Text } from 'tamagui';
 import {
   RAVEN_LIGHT,
   RAVEN_RADIUS,
@@ -13,7 +14,7 @@ interface RavenInputProps {
   value: string;
   onChangeText: (text: string) => void;
   secureTextEntry?: boolean;
-  keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
+  keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad' | 'number-pad';
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   autoCorrect?: boolean;
   editable?: boolean;
@@ -22,7 +23,7 @@ interface RavenInputProps {
 
 /**
  * RavenInput - Styled input field for the Raven Light theme
- * Light gray background, no border, rounded corners
+ * Uses React Native TextInput to avoid Tamagui iOS boolean type issues
  */
 export const RavenInput: React.FC<RavenInputProps> = ({
   label,
@@ -47,24 +48,35 @@ export const RavenInput: React.FC<RavenInputProps> = ({
         {label}
       </Text>
     )}
-    <Input
-      placeholder={placeholder}
-      value={value}
-      onChangeText={onChangeText}
-      secureTextEntry={secureTextEntry}
-      keyboardType={keyboardType}
-      autoCapitalize={autoCapitalize}
-      autoCorrect={autoCorrect}
-      editable={editable}
-      maxLength={maxLength}
-      backgroundColor={RAVEN_LIGHT.inputBackground}
-      borderWidth={0}
-      borderRadius={RAVEN_RADIUS.input}
-      color={RAVEN_LIGHT.primaryText}
-      placeholderTextColor={RAVEN_LIGHT.inputPlaceholder}
-      paddingHorizontal="$4"
-      height={RAVEN_DIMENSIONS.inputHeight}
-      fontSize={RAVEN_TYPOGRAPHY.md}
-    />
+    <View style={styles.inputContainer}>
+      <TextInput
+        placeholder={placeholder}
+        value={value}
+        onChangeText={onChangeText}
+        secureTextEntry={secureTextEntry}
+        keyboardType={keyboardType}
+        autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
+        editable={editable}
+        maxLength={maxLength}
+        placeholderTextColor={RAVEN_LIGHT.inputPlaceholder}
+        style={styles.input}
+      />
+    </View>
   </YStack>
 );
+
+const styles = StyleSheet.create({
+  inputContainer: {
+    backgroundColor: RAVEN_LIGHT.inputBackground,
+    borderRadius: RAVEN_RADIUS.input,
+    height: RAVEN_DIMENSIONS.inputHeight,
+    justifyContent: 'center',
+  },
+  input: {
+    flex: 1,
+    paddingHorizontal: 16,
+    fontSize: RAVEN_TYPOGRAPHY.md,
+    color: RAVEN_LIGHT.primaryText,
+  },
+});

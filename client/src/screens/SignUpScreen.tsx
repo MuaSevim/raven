@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Alert, TouchableOpacity } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { Alert, TouchableOpacity, StyleSheet } from 'react-native';
 import { YStack, XStack, Text, ScrollView } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -13,8 +13,11 @@ import {
   RAVEN_SPACING,
 } from '../config/theme.config';
 
-// Reusable Components
-import { RavenInput, RavenButton } from '../components';
+// Components
+import { RavenInput, RavenButton, SearchableSelect, SelectOption } from '../components';
+
+// Services
+import { LocationService } from '../services/LocationService';
 
 // Navigation Types
 import { RootStackParamList } from '../../App';
@@ -32,19 +35,33 @@ interface FormData {
   month: string;
   year: string;
   // Step 2: Location
-  country: string;
-  city: string;
+  countryCode: string;
+  countryName: string;
+  cityId: string;
+  cityName: string;
   // Step 3: Security
   email: string;
   password: string;
 }
 
+interface FormErrors {
+  firstName?: string;
+  lastName?: string;
+  day?: string;
+  month?: string;
+  year?: string;
+  country?: string;
+  city?: string;
+  email?: string;
+  password?: string;
+}
+
 const TOTAL_STEPS = 3;
 
 /**
- * SignUpScreen - Multi-step registration flow
+ * SignUpScreen - Multi-step registration flow with validation
  * Step 1: Identity (First Name, Last Name, DOB)
- * Step 2: Location (Country, City)
+ * Step 2: Location (Country, City) with SearchableSelect
  * Step 3: Security (Email, Password)
  */
 export const SignUpScreen: React.FC = () => {
@@ -60,17 +77,45 @@ export const SignUpScreen: React.FC = () => {
     day: '',
     month: '',
     year: '',
-    country: '',
-    city: '',
+    countryCode: '',
+    countryName: '',
+    cityId: '',
+    cityName: '',
     email: '',
     password: '',
   });
+
+  // Form errors
+  const [errors, setErrors] = useState<FormErrors>({});
+
+  // ============================================
+  // LOCATION OPTIONS
+  // ============================================
+  const countryOptions = useMemo((): SelectOption[] => {
+    return LocationService.getAllCountries().map((c) => ({
+      id: c.code,
+      label: c.name,
+      icon: c.flag,
+    }));
+  }, []);
+
+  const cityOptions = useMemo((): SelectOption[] => {
+    if (!formData.countryCode) return [];
+    return LocationService.getCitiesByCountry(formData.countryCode).map((c) => ({
+      id: c.id,
+      label: c.name,
+    }));
+  }, [formData.countryCode]);
 
   // ============================================
   // HELPERS
   // ============================================
   const updateField = (field: keyof FormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    // Clear error when user types
+    if (errors[field as keyof FormErrors]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
   };
 
   const getHeaderTitle = (): string => {
@@ -88,36 +133,89 @@ export const SignUpScreen: React.FC = () => {
   // ============================================
   // VALIDATION
   // ============================================
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password: string): boolean => {
+    return password.length >= 8;
+  };
+
+  const validateDOB = (): { valid: boolean; error?: string } => {
+    const day = parseInt(formData.day, 10);
+    const month = parseInt(formData.month, 10);
+    const year = parseInt(formData.year, 10);
+
+    if (!formData.day || !formData.month || !formData.year) {
+      return { valid: false, error: 'Please enter your full date of birth' };
+    }
+
+    if (isNaN(day) || day < 1 || day > 31) {
+      return { valid: false, error: 'Invalid day' };
+    }
+
+    if (isNaN(month) || month < 1 || month > 12) {
+      return { valid: false, error: 'Invalid month' };
+    }
+
+    const currentYear = new Date().getFullYear();
+    if (isNaN(year) || year < 1900 || year > currentYear - 13) {
+      return { valid: false, error: 'You must be at least 13 years old' };
+    }
+
+    return { valid: true };
+  };
+
   const validateStep = (): boolean => {
+    const newErrors: FormErrors = {};
+
     switch (currentStep) {
       case 1:
-        if (!formData.firstName.trim() || !formData.lastName.trim()) {
-          Alert.alert('Required Fields', 'Please enter your first and last name.');
-          return false;
+        if (!formData.firstName.trim()) {
+          newErrors.firstName = 'First name is required';
         }
-        return true;
+        if (!formData.lastName.trim()) {
+          newErrors.lastName = 'Last name is required';
+        }
+        const dobValidation = validateDOB();
+        if (!dobValidation.valid) {
+          newErrors.day = dobValidation.error;
+        }
+        break;
 
       case 2:
-        if (!formData.country.trim() || !formData.city.trim()) {
-          Alert.alert('Required Fields', 'Please enter your country and city.');
-          return false;
+        if (!formData.countryCode) {
+          newErrors.country = 'Please select a country';
         }
-        return true;
+        if (!formData.cityId) {
+          newErrors.city = 'Please select a city';
+        }
+        break;
 
       case 3:
         if (!formData.email.trim()) {
-          Alert.alert('Required Field', 'Please enter your email address.');
-          return false;
+          newErrors.email = 'Email is required';
+        } else if (!validateEmail(formData.email)) {
+          newErrors.email = 'Please enter a valid email';
         }
         if (!formData.password.trim()) {
-          Alert.alert('Required Field', 'Please enter a password.');
-          return false;
+          newErrors.password = 'Password is required';
+        } else if (!validatePassword(formData.password)) {
+          newErrors.password = 'Password must be at least 8 characters';
         }
-        return true;
-
-      default:
-        return false;
+        break;
     }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      const firstError = Object.values(newErrors)[0];
+      Alert.alert('Validation Error', firstError);
+      return false;
+    }
+
+    return true;
   };
 
   // ============================================
@@ -125,7 +223,7 @@ export const SignUpScreen: React.FC = () => {
   // ============================================
   const handleBack = () => {
     if (currentStep > 1) {
-      setCurrentStep(prev => prev - 1);
+      setCurrentStep((prev) => prev - 1);
     } else {
       navigation.goBack();
     }
@@ -135,46 +233,48 @@ export const SignUpScreen: React.FC = () => {
     if (!validateStep()) return;
 
     if (currentStep < TOTAL_STEPS) {
-      setCurrentStep(prev => prev + 1);
+      setCurrentStep((prev) => prev + 1);
     } else {
       handleSignIn();
     }
   };
 
   const handleSignIn = () => {
-    // Log account data (in production, this would call an API)
     console.log('=== Creating Account ===');
     console.log('Name:', `${formData.firstName} ${formData.lastName}`);
     console.log('DOB:', `${formData.day}/${formData.month}/${formData.year}`);
-    console.log('Location:', `${formData.city}, ${formData.country}`);
+    console.log('Location:', `${formData.cityName}, ${formData.countryName}`);
     console.log('Email:', formData.email);
     console.log('========================');
 
-    // Navigate to Verification screen
     navigation.navigate('Verification');
   };
 
-  const handleRegister = () => {
-    // Go back to step 1 to start over
-    setCurrentStep(1);
-    setFormData({
-      firstName: '',
-      lastName: '',
-      day: '',
-      month: '',
-      year: '',
-      country: '',
-      city: '',
-      email: '',
-      password: '',
-    });
+  const handleCountrySelect = (option: SelectOption) => {
+    setFormData((prev) => ({
+      ...prev,
+      countryCode: option.id,
+      countryName: option.label,
+      cityId: '',
+      cityName: '',
+    }));
+    setErrors((prev) => ({ ...prev, country: undefined }));
+  };
+
+  const handleCitySelect = (option: SelectOption) => {
+    setFormData((prev) => ({
+      ...prev,
+      cityId: option.id,
+      cityName: option.label,
+    }));
+    setErrors((prev) => ({ ...prev, city: undefined }));
   };
 
   // ============================================
   // STEP INDICATOR
   // ============================================
   const renderStepIndicator = () => (
-    <XStack justifyContent="center" space="$2" marginTop="$2">
+    <XStack justifyContent="center" gap={8} marginTop="$2">
       {Array.from({ length: TOTAL_STEPS }, (_, index) => (
         <YStack
           key={index}
@@ -195,7 +295,7 @@ export const SignUpScreen: React.FC = () => {
   // RENDER STEPS
   // ============================================
   const renderStep1 = () => (
-    <YStack space="$4" width="100%">
+    <YStack gap={16} width="100%">
       <Text
         fontSize={RAVEN_TYPOGRAPHY.xl}
         fontWeight={RAVEN_TYPOGRAPHY.bold}
@@ -212,6 +312,9 @@ export const SignUpScreen: React.FC = () => {
         onChangeText={(v: string) => updateField('firstName', v)}
         autoCapitalize="words"
       />
+      {errors.firstName && (
+        <Text style={styles.errorText}>{errors.firstName}</Text>
+      )}
 
       <RavenInput
         label="Last Name"
@@ -220,12 +323,22 @@ export const SignUpScreen: React.FC = () => {
         onChangeText={(v: string) => updateField('lastName', v)}
         autoCapitalize="words"
       />
+      {errors.lastName && (
+        <Text style={styles.errorText}>{errors.lastName}</Text>
+      )}
 
-      {/* Date of Birth Row */}
-      <XStack space="$3">
+      <Text
+        fontSize={RAVEN_TYPOGRAPHY.sm}
+        fontWeight={RAVEN_TYPOGRAPHY.medium}
+        color={RAVEN_LIGHT.primaryText}
+        marginTop="$2"
+      >
+        Date of Birth
+      </Text>
+
+      <XStack gap={12}>
         <YStack flex={1}>
           <RavenInput
-            label="Day"
             placeholder="DD"
             value={formData.day}
             onChangeText={(v: string) => updateField('day', v)}
@@ -235,7 +348,6 @@ export const SignUpScreen: React.FC = () => {
         </YStack>
         <YStack flex={1}>
           <RavenInput
-            label="Month"
             placeholder="MM"
             value={formData.month}
             onChangeText={(v: string) => updateField('month', v)}
@@ -243,21 +355,22 @@ export const SignUpScreen: React.FC = () => {
             maxLength={2}
           />
         </YStack>
+        <YStack flex={1.5}>
+          <RavenInput
+            placeholder="YYYY"
+            value={formData.year}
+            onChangeText={(v: string) => updateField('year', v)}
+            keyboardType="number-pad"
+            maxLength={4}
+          />
+        </YStack>
       </XStack>
-
-      <RavenInput
-        label="Year"
-        placeholder="YYYY"
-        value={formData.year}
-        onChangeText={(v: string) => updateField('year', v)}
-        keyboardType="number-pad"
-        maxLength={4}
-      />
+      {errors.day && <Text style={styles.errorText}>{errors.day}</Text>}
     </YStack>
   );
 
   const renderStep2 = () => (
-    <YStack space="$4" width="100%">
+    <YStack gap={16} width="100%">
       <Text
         fontSize={RAVEN_TYPOGRAPHY.xl}
         fontWeight={RAVEN_TYPOGRAPHY.bold}
@@ -267,36 +380,58 @@ export const SignUpScreen: React.FC = () => {
         Where are you based?
       </Text>
 
-      <RavenInput
-        placeholder="Select"
-        value={formData.country}
-        onChangeText={(v: string) => updateField('country', v)}
+      <SearchableSelect
+        label="Country"
+        placeholder="Select your country"
+        value={formData.countryName}
+        options={countryOptions}
+        onSelect={handleCountrySelect}
       />
+      {errors.country && <Text style={styles.errorText}>{errors.country}</Text>}
 
-      <RavenInput
-        placeholder="Select"
-        value={formData.city}
-        onChangeText={(v: string) => updateField('city', v)}
+      <SearchableSelect
+        label="City"
+        placeholder="Select your city"
+        value={formData.cityName}
+        options={cityOptions}
+        onSelect={handleCitySelect}
+        disabled={!formData.countryCode}
       />
+      {errors.city && <Text style={styles.errorText}>{errors.city}</Text>}
     </YStack>
   );
 
   const renderStep3 = () => (
-    <YStack space="$4" width="100%">
+    <YStack gap={16} width="100%">
+      <Text
+        fontSize={RAVEN_TYPOGRAPHY.xl}
+        fontWeight={RAVEN_TYPOGRAPHY.bold}
+        color={RAVEN_LIGHT.primaryText}
+        marginBottom="$2"
+      >
+        Secure your account
+      </Text>
+
       <RavenInput
-        placeholder="Email"
+        label="Email"
+        placeholder="you@example.com"
         value={formData.email}
         onChangeText={(v: string) => updateField('email', v)}
         keyboardType="email-address"
         autoCapitalize="none"
       />
+      {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
       <RavenInput
-        placeholder="Password"
+        label="Password"
+        placeholder="At least 8 characters"
         value={formData.password}
         onChangeText={(v: string) => updateField('password', v)}
         secureTextEntry
       />
+      {errors.password && (
+        <Text style={styles.errorText}>{errors.password}</Text>
+      )}
     </YStack>
   );
 
@@ -317,31 +452,33 @@ export const SignUpScreen: React.FC = () => {
   // MAIN RENDER
   // ============================================
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: RAVEN_LIGHT.background }}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
         flex={1}
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
         <YStack flex={1} paddingHorizontal={RAVEN_SPACING.screenPadding}>
-          {/* ========== HEADER ========== */}
+          {/* Header */}
           <XStack
             alignItems="center"
             justifyContent="center"
             paddingVertical="$4"
             position="relative"
           >
-            {/* Back Button */}
             <TouchableOpacity
               onPress={handleBack}
-              style={{ position: 'absolute', left: 0, padding: 4 }}
+              style={styles.backButton}
               activeOpacity={0.7}
             >
-              <Ionicons name="arrow-back" size={24} color={RAVEN_LIGHT.primaryText} />
+              <Ionicons
+                name="arrow-back"
+                size={24}
+                color={RAVEN_LIGHT.primaryText}
+              />
             </TouchableOpacity>
 
-            {/* Title */}
             <Text
               fontSize={RAVEN_TYPOGRAPHY.lg}
               fontWeight={RAVEN_TYPOGRAPHY.semibold}
@@ -351,33 +488,37 @@ export const SignUpScreen: React.FC = () => {
             </Text>
           </XStack>
 
-          {/* Step Indicator */}
           {renderStepIndicator()}
 
-          {/* ========== STEP CONTENT ========== */}
+          {/* Step Content */}
           <YStack flex={1} paddingTop="$6">
             {renderCurrentStep()}
           </YStack>
 
-          {/* ========== BOTTOM SECTION ========== */}
+          {/* Bottom Section */}
           <YStack paddingBottom="$6">
             <RavenButton onPress={handleNext}>
-              {currentStep === TOTAL_STEPS ? 'Sign In' : 'Next'}
+              {currentStep === TOTAL_STEPS ? 'Create Account' : 'Next'}
             </RavenButton>
 
-            {/* Register Link (only on Step 3) */}
             {currentStep === TOTAL_STEPS && (
               <XStack justifyContent="center" marginTop="$4">
-                <Text color={RAVEN_LIGHT.secondaryText} fontSize={RAVEN_TYPOGRAPHY.sm}>
-                  No account?{' '}
+                <Text
+                  color={RAVEN_LIGHT.secondaryText}
+                  fontSize={RAVEN_TYPOGRAPHY.sm}
+                >
+                  Already have an account?{' '}
                 </Text>
-                <TouchableOpacity onPress={handleRegister} activeOpacity={0.7}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Login')}
+                  activeOpacity={0.7}
+                >
                   <Text
                     color={RAVEN_LIGHT.info}
                     fontWeight={RAVEN_TYPOGRAPHY.medium}
                     fontSize={RAVEN_TYPOGRAPHY.sm}
                   >
-                    Register
+                    Sign In
                   </Text>
                 </TouchableOpacity>
               </XStack>
@@ -388,3 +529,26 @@ export const SignUpScreen: React.FC = () => {
     </SafeAreaView>
   );
 };
+
+// ============================================
+// STYLES
+// ============================================
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: RAVEN_LIGHT.background,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  backButton: {
+    position: 'absolute',
+    left: 0,
+    padding: 4,
+  },
+  errorText: {
+    color: RAVEN_LIGHT.error,
+    fontSize: RAVEN_TYPOGRAPHY.xs,
+    marginTop: -8,
+  },
+});

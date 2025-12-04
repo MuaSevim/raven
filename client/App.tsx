@@ -61,9 +61,9 @@ export default function App() {
   }
 
   return (
-    <TamaguiProvider config={tamaguiConfig} defaultTheme="dark">
+    <TamaguiProvider config={tamaguiConfig} defaultTheme="light">
       <SafeAreaProvider>
-        <StatusBar style="dark" backgroundColor={RAVEN_LIGHT.background} />
+        <StatusBar style="dark" />
         <NavigationContainer>
           <Stack.Navigator
             initialRouteName="Login"
