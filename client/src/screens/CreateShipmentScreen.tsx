@@ -28,6 +28,8 @@ import {
   RavenButton,
   SearchableSelect,
   SelectOption,
+  PhoneInput,
+  ChipSelect,
 } from '../components';
 
 // Services
@@ -69,18 +71,28 @@ interface ShipmentFormData {
 }
 
 const TOTAL_STEPS = 4;
-const MEETING_POINTS = ['Airport', 'City Center', 'Other'] as const;
-const PAYMENT_METHODS = ['Mastercard', 'Visa', 'PayPal', 'Apple Pay'] as const;
-const PRICE_CHIPS = [25, 50, 75, 100, 150, 200] as const;
-const PHONE_COUNTRY_CODES = [
-  { code: '+1', country: 'US/CA' },
-  { code: '+44', country: 'UK' },
-  { code: '+49', country: 'DE' },
-  { code: '+33', country: 'FR' },
-  { code: '+46', country: 'SE' },
-  { code: '+81', country: 'JP' },
-  { code: '+91', country: 'IN' },
-  { code: '+971', country: 'UAE' },
+
+// Chip options for ChipSelect components
+const MEETING_POINT_OPTIONS = [
+  { value: 'Airport', label: 'Airport' },
+  { value: 'City Center', label: 'City Center' },
+  { value: 'Other', label: 'Other' },
+];
+
+const PAYMENT_METHOD_OPTIONS = [
+  { value: 'Mastercard', label: 'Mastercard' },
+  { value: 'Visa', label: 'Visa' },
+  { value: 'PayPal', label: 'PayPal' },
+  { value: 'Apple Pay', label: 'Apple Pay' },
+];
+
+const PRICE_OPTIONS = [
+  { value: '25', label: '$25' },
+  { value: '50', label: '$50' },
+  { value: '75', label: '$75' },
+  { value: '100', label: '$100' },
+  { value: '150', label: '$150' },
+  { value: '200', label: '$200' },
 ];
 
 /**
@@ -376,53 +388,13 @@ export const CreateShipmentScreen: React.FC = () => {
         disabled={!formData.originCountryCode}
       />
 
-      <Text
-        fontSize={RAVEN_TYPOGRAPHY.md}
-        fontWeight={RAVEN_TYPOGRAPHY.semibold}
-        color={RAVEN_LIGHT.primaryText}
-        marginTop="$2"
-      >
-        Preferred meeting point
-      </Text>
-
-      <XStack gap={8} flexWrap="wrap">
-        {MEETING_POINTS.map((point) => (
-          <TouchableOpacity
-            key={point}
-            onPress={() => updateField('meetingPoint', point)}
-            activeOpacity={0.7}
-          >
-            <YStack
-              paddingHorizontal="$4"
-              paddingVertical="$2"
-              borderRadius={RAVEN_RADIUS.button}
-              borderWidth={1}
-              borderColor={
-                formData.meetingPoint === point
-                  ? RAVEN_LIGHT.primaryText
-                  : RAVEN_LIGHT.border
-              }
-              backgroundColor={
-                formData.meetingPoint === point
-                  ? RAVEN_LIGHT.inputBackground
-                  : 'transparent'
-              }
-            >
-              <Text
-                fontSize={RAVEN_TYPOGRAPHY.sm}
-                color={RAVEN_LIGHT.primaryText}
-                fontWeight={
-                  formData.meetingPoint === point
-                    ? RAVEN_TYPOGRAPHY.medium
-                    : RAVEN_TYPOGRAPHY.regular
-                }
-              >
-                {point}
-              </Text>
-            </YStack>
-          </TouchableOpacity>
-        ))}
-      </XStack>
+      {/* Meeting Point - Using ChipSelect */}
+      <ChipSelect
+        label="Preferred meeting point"
+        options={MEETING_POINT_OPTIONS}
+        value={formData.meetingPoint}
+        onSelect={(val) => updateField('meetingPoint', val as 'Airport' | 'City Center' | 'Other')}
+      />
 
       <Text
         fontSize={RAVEN_TYPOGRAPHY.md}
@@ -585,51 +557,12 @@ export const CreateShipmentScreen: React.FC = () => {
         </Text>
       </YStack>
 
-      {/* Price Chips */}
-      <XStack flexWrap="wrap" gap={8} justifyContent="center">
-        {PRICE_CHIPS.map((chip) => (
-          <TouchableOpacity
-            key={chip}
-            onPress={() => updateField('price', String(chip))}
-            activeOpacity={0.7}
-          >
-            <YStack
-              paddingHorizontal="$4"
-              paddingVertical="$3"
-              borderRadius={RAVEN_RADIUS.button}
-              borderWidth={1}
-              borderColor={
-                formData.price === String(chip)
-                  ? RAVEN_LIGHT.primaryText
-                  : RAVEN_LIGHT.border
-              }
-              backgroundColor={
-                formData.price === String(chip)
-                  ? RAVEN_LIGHT.primaryText
-                  : 'transparent'
-              }
-              minWidth={70}
-              alignItems="center"
-            >
-              <Text
-                fontSize={RAVEN_TYPOGRAPHY.md}
-                color={
-                  formData.price === String(chip)
-                    ? RAVEN_LIGHT.background
-                    : RAVEN_LIGHT.primaryText
-                }
-                fontWeight={
-                  formData.price === String(chip)
-                    ? RAVEN_TYPOGRAPHY.semibold
-                    : RAVEN_TYPOGRAPHY.regular
-                }
-              >
-                ${chip}
-              </Text>
-            </YStack>
-          </TouchableOpacity>
-        ))}
-      </XStack>
+      {/* Price Chips - Using ChipSelect */}
+      <ChipSelect
+        options={PRICE_OPTIONS}
+        value={formData.price}
+        onSelect={(val) => updateField('price', val)}
+      />
 
       {/* Custom Price Input */}
       <RavenInput
@@ -644,53 +577,13 @@ export const CreateShipmentScreen: React.FC = () => {
         This is the amount the Raven (traveler) will receive for this delivery.
       </Text>
 
-      <Text
-        fontSize={RAVEN_TYPOGRAPHY.md}
-        fontWeight={RAVEN_TYPOGRAPHY.semibold}
-        color={RAVEN_LIGHT.primaryText}
-        marginTop="$4"
-      >
-        Payment method
-      </Text>
-
-      <XStack flexWrap="wrap" gap={8}>
-        {PAYMENT_METHODS.map((method) => (
-          <TouchableOpacity
-            key={method}
-            onPress={() => updateField('paymentMethod', method)}
-            activeOpacity={0.7}
-          >
-            <YStack
-              paddingHorizontal="$4"
-              paddingVertical="$2"
-              borderRadius={RAVEN_RADIUS.button}
-              borderWidth={1}
-              borderColor={
-                formData.paymentMethod === method
-                  ? RAVEN_LIGHT.primaryText
-                  : RAVEN_LIGHT.border
-              }
-              backgroundColor={
-                formData.paymentMethod === method
-                  ? RAVEN_LIGHT.inputBackground
-                  : 'transparent'
-              }
-            >
-              <Text
-                fontSize={RAVEN_TYPOGRAPHY.sm}
-                color={RAVEN_LIGHT.primaryText}
-                fontWeight={
-                  formData.paymentMethod === method
-                    ? RAVEN_TYPOGRAPHY.medium
-                    : RAVEN_TYPOGRAPHY.regular
-                }
-              >
-                {method}
-              </Text>
-            </YStack>
-          </TouchableOpacity>
-        ))}
-      </XStack>
+      {/* Payment Methods - Using ChipSelect */}
+      <ChipSelect
+        label="Payment method"
+        options={PAYMENT_METHOD_OPTIONS}
+        value={formData.paymentMethod}
+        onSelect={(val) => updateField('paymentMethod', val)}
+      />
     </YStack>
   );
 
@@ -731,56 +624,14 @@ export const CreateShipmentScreen: React.FC = () => {
         keyboardType="numeric"
       />
 
-      {/* Phone Input with Country Code */}
-      <Text
-        fontSize={RAVEN_TYPOGRAPHY.sm}
-        fontWeight={RAVEN_TYPOGRAPHY.medium}
-        color={RAVEN_LIGHT.primaryText}
-        marginBottom={4}
-      >
-        Phone Number
-      </Text>
-
-      <XStack gap={8}>
-        {/* Country Code Picker */}
-        <View style={styles.countryCodeContainer}>
-          <TouchableOpacity
-            style={styles.countryCodeButton}
-            onPress={() => {
-              Alert.alert(
-                'Select Country Code',
-                undefined,
-                PHONE_COUNTRY_CODES.map((item) => ({
-                  text: `${item.code} (${item.country})`,
-                  onPress: () => updateField('phoneCountryCode', item.code),
-                }))
-              );
-            }}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.countryCodeText}>
-              {formData.phoneCountryCode}
-            </Text>
-            <Ionicons
-              name="chevron-down"
-              size={16}
-              color={RAVEN_LIGHT.secondaryText}
-            />
-          </TouchableOpacity>
-        </View>
-
-        {/* Phone Number Input */}
-        <View style={styles.phoneInputContainer}>
-          <TextInput
-            style={styles.phoneInput}
-            placeholder="000-000-0000"
-            placeholderTextColor={RAVEN_LIGHT.inputPlaceholder}
-            value={formData.phoneNumber}
-            onChangeText={(v: string) => updateField('phoneNumber', v)}
-            keyboardType="phone-pad"
-          />
-        </View>
-      </XStack>
+      {/* Phone Input - Using PhoneInput component */}
+      <PhoneInput
+        label="Phone Number"
+        countryCode={formData.phoneCountryCode}
+        phoneNumber={formData.phoneNumber}
+        onCountryCodeChange={(code) => updateField('phoneCountryCode', code)}
+        onPhoneNumberChange={(num) => updateField('phoneNumber', num)}
+      />
     </YStack>
   );
 
@@ -907,36 +758,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     right: 8,
-  },
-  countryCodeContainer: {
-    width: 90,
-  },
-  countryCodeButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: RAVEN_LIGHT.inputBackground,
-    borderRadius: RAVEN_RADIUS.input,
-    paddingHorizontal: 12,
-    paddingVertical: 14,
-    borderWidth: 1,
-    borderColor: RAVEN_LIGHT.border,
-  },
-  countryCodeText: {
-    fontSize: RAVEN_TYPOGRAPHY.md,
-    color: RAVEN_LIGHT.primaryText,
-  },
-  phoneInputContainer: {
-    flex: 1,
-  },
-  phoneInput: {
-    backgroundColor: RAVEN_LIGHT.inputBackground,
-    borderRadius: RAVEN_RADIUS.input,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: RAVEN_TYPOGRAPHY.md,
-    color: RAVEN_LIGHT.primaryText,
-    borderWidth: 1,
-    borderColor: RAVEN_LIGHT.border,
   },
 });

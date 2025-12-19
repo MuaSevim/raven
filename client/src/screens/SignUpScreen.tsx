@@ -1,5 +1,12 @@
-import React, { useState, useMemo } from 'react';
-import { Alert, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useMemo, useEffect } from 'react';
+import {
+  Alert,
+  TouchableOpacity,
+  StyleSheet,
+  Modal,
+  FlatList,
+  View,
+} from 'react-native';
 import { YStack, XStack, Text, ScrollView } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -11,10 +18,11 @@ import {
   RAVEN_LIGHT,
   RAVEN_TYPOGRAPHY,
   RAVEN_SPACING,
+  RAVEN_RADIUS,
 } from '../config/theme.config';
 
 // Components
-import { RavenInput, RavenButton, SearchableSelect, SelectOption } from '../components';
+import { RavenInput, RavenButton, SearchableSelect, SelectOption, DatePickerField } from '../components';
 
 // Services
 import { LocationService } from '../services/LocationService';
@@ -88,6 +96,10 @@ export const SignUpScreen: React.FC = () => {
   // Form errors
   const [errors, setErrors] = useState<FormErrors>({});
 
+  // Cities loading state
+  const [citiesLoading, setCitiesLoading] = useState(false);
+  const [cityOptions, setCityOptions] = useState<SelectOption[]>([]);
+
   // ============================================
   // LOCATION OPTIONS
   // ============================================
@@ -99,13 +111,31 @@ export const SignUpScreen: React.FC = () => {
     }));
   }, []);
 
-  const cityOptions = useMemo((): SelectOption[] => {
-    if (!formData.countryCode) return [];
-    return LocationService.getCitiesByCountry(formData.countryCode).map((c) => ({
-      id: c.id,
-      label: c.name,
-    }));
-  }, [formData.countryCode]);
+  // Fetch cities when country changes
+  useEffect(() => {
+    if (!formData.countryCode || !formData.countryName) {
+      setCityOptions([]);
+      return;
+    }
+
+    setCitiesLoading(true);
+    LocationService.getCitiesByCountryAsync(formData.countryCode)
+      .then((cities) => {
+        setCityOptions(
+          cities.map((c) => ({
+            id: c.id,
+            label: c.name,
+          }))
+        );
+      })
+      .catch((err) => {
+        console.error('Failed to load cities:', err);
+        setCityOptions([]);
+      })
+      .finally(() => {
+        setCitiesLoading(false);
+      });
+  }, [formData.countryCode, formData.countryName]);
 
   // ============================================
   // HELPERS
@@ -327,45 +357,16 @@ export const SignUpScreen: React.FC = () => {
         <Text style={styles.errorText}>{errors.lastName}</Text>
       )}
 
-      <Text
-        fontSize={RAVEN_TYPOGRAPHY.sm}
-        fontWeight={RAVEN_TYPOGRAPHY.medium}
-        color={RAVEN_LIGHT.primaryText}
-        marginTop="$2"
-      >
-        Date of Birth
-      </Text>
-
-      <XStack gap={12}>
-        <YStack flex={1}>
-          <RavenInput
-            placeholder="DD"
-            value={formData.day}
-            onChangeText={(v: string) => updateField('day', v)}
-            keyboardType="number-pad"
-            maxLength={2}
-          />
-        </YStack>
-        <YStack flex={1}>
-          <RavenInput
-            placeholder="MM"
-            value={formData.month}
-            onChangeText={(v: string) => updateField('month', v)}
-            keyboardType="number-pad"
-            maxLength={2}
-          />
-        </YStack>
-        <YStack flex={1.5}>
-          <RavenInput
-            placeholder="YYYY"
-            value={formData.year}
-            onChangeText={(v: string) => updateField('year', v)}
-            keyboardType="number-pad"
-            maxLength={4}
-          />
-        </YStack>
-      </XStack>
-      {errors.day && <Text style={styles.errorText}>{errors.day}</Text>}
+      <DatePickerField
+        label="Date of Birth"
+        day={formData.day}
+        month={formData.month}
+        year={formData.year}
+        onDayChange={(v) => updateField('day', v)}
+        onMonthChange={(v) => updateField('month', v)}
+        onYearChange={(v) => updateField('year', v)}
+        error={errors.day}
+      />
     </YStack>
   );
 
@@ -391,11 +392,11 @@ export const SignUpScreen: React.FC = () => {
 
       <SearchableSelect
         label="City"
-        placeholder="Select your city"
+        placeholder={citiesLoading ? "Loading cities..." : "Select your city"}
         value={formData.cityName}
         options={cityOptions}
         onSelect={handleCitySelect}
-        disabled={!formData.countryCode}
+        disabled={!formData.countryCode || citiesLoading}
       />
       {errors.city && <Text style={styles.errorText}>{errors.city}</Text>}
     </YStack>
@@ -455,7 +456,7 @@ export const SignUpScreen: React.FC = () => {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         flex={1}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >

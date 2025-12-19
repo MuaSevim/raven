@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Button, Text } from 'tamagui';
 import {
   RAVEN_LIGHT,
@@ -18,15 +18,16 @@ interface RavenButtonProps {
 /**
  * RavenButton - Primary action button for the Raven Light theme
  * Dark background (#1A1A1A), white text, rounded corners
+ * Optimized with useMemo for color calculations
  */
-export const RavenButton: React.FC<RavenButtonProps> = ({
+export const RavenButton: React.FC<RavenButtonProps> = React.memo(({
   children,
   onPress,
   disabled = false,
   variant = 'primary',
   fullWidth = true,
 }) => {
-  const getBackgroundColor = () => {
+  const getBackgroundColor = useCallback(() => {
     if (disabled) return '#CCCCCC';
     switch (variant) {
       case 'primary':
@@ -38,9 +39,9 @@ export const RavenButton: React.FC<RavenButtonProps> = ({
       default:
         return RAVEN_LIGHT.buttonPrimary;
     }
-  };
+  }, [disabled, variant]);
 
-  const getTextColor = () => {
+  const getTextColor = useCallback(() => {
     if (disabled) return '#888888';
     switch (variant) {
       case 'primary':
@@ -51,7 +52,12 @@ export const RavenButton: React.FC<RavenButtonProps> = ({
       default:
         return RAVEN_LIGHT.buttonPrimaryText;
     }
-  };
+  }, [disabled, variant]);
+
+  const pressStyle = useMemo(() => ({
+    backgroundColor: disabled ? '#CCCCCC' : RAVEN_LIGHT.buttonPrimaryPressed,
+    opacity: 0.9,
+  }), [disabled]);
 
   return (
     <Button
@@ -63,10 +69,7 @@ export const RavenButton: React.FC<RavenButtonProps> = ({
       onPress={onPress}
       disabled={disabled}
       width={fullWidth ? '100%' : 'auto'}
-      pressStyle={{
-        backgroundColor: disabled ? '#CCCCCC' : RAVEN_LIGHT.buttonPrimaryPressed,
-        opacity: 0.9,
-      }}
+      pressStyle={pressStyle}
     >
       <Text
         color={getTextColor()}
@@ -77,4 +80,7 @@ export const RavenButton: React.FC<RavenButtonProps> = ({
       </Text>
     </Button>
   );
-};
+});
+
+RavenButton.displayName = 'RavenButton';
+

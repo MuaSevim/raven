@@ -21225,9 +21225,6 @@ var require_dist = __commonJS({
 // src/config/tamagui.config.ts
 var tamagui_config_exports = {};
 __export(tamagui_config_exports, {
-  RAVEN_COLORS: () => RAVEN_COLORS,
-  RAVEN_RADIUS: () => RAVEN_RADIUS,
-  RAVEN_SPACING: () => RAVEN_SPACING,
   default: () => tamagui_config_default
 });
 module.exports = __toCommonJS(tamagui_config_exports);
@@ -30643,66 +30640,43 @@ function getValue(input, isColor = false) {
 __name(getValue, "getValue");
 
 // src/config/tamagui.config.ts
-var ravenColors = {
-  background: "#121212",
-  cardSurface: "#1E1E1E",
-  primaryAccent: "#2D60FF",
-  textPrimary: "#FFFFFF",
-  textSecondary: "#B0B0B0",
-  border: "#333333",
-  success: "#22C55E",
-  warning: "#F59E0B",
-  error: "#EF4444",
-  info: "#3B82F6",
-  primaryAccentLight: "#4B7BFF",
-  primaryAccentDark: "#1A4AD4",
-  surfaceElevated: "#252525",
-  surfacePressed: "#2A2A2A"
-};
 var interFont = createInterFont({
   face: {
     400: { normal: "Inter_400Regular" },
-    500: { normal: "Inter_400Regular" },
+    500: { normal: "Inter_500Medium" },
     600: { normal: "Inter_600SemiBold" },
-    700: { normal: "Inter_600SemiBold" },
+    700: { normal: "Inter_700Bold" },
     800: { normal: "Inter_800ExtraBold" }
   }
 });
 var tokens = (0, import_core23.createTokens)({
   color: {
-    ravenBackground: ravenColors.background,
-    ravenCard: ravenColors.cardSurface,
-    ravenPrimary: ravenColors.primaryAccent,
-    ravenTextPrimary: ravenColors.textPrimary,
-    ravenTextSecondary: ravenColors.textSecondary,
-    ravenBorder: ravenColors.border,
-    ravenSuccess: ravenColors.success,
-    ravenWarning: ravenColors.warning,
-    ravenError: ravenColors.error,
-    ravenInfo: ravenColors.info,
     white: "#FFFFFF",
     black: "#000000",
-    gray: "#808080",
+    gray100: "#F5F5F5",
+    gray200: "#E5E5E5",
+    gray300: "#D4D4D4",
+    gray400: "#A3A3A3",
+    gray500: "#737373",
+    gray600: "#525252",
+    gray700: "#404040",
+    gray800: "#262626",
+    gray900: "#171717",
+    blue500: "#3B82F6",
+    green500: "#22C55E",
+    red500: "#EF4444",
+    yellow500: "#F59E0B",
     transparent: "transparent"
   },
   radius: {
     0: 0,
-    1: 3,
-    2: 5,
-    3: 8,
-    4: 10,
-    5: 12,
-    6: 16,
-    7: 20,
-    8: 24,
-    9: 32,
-    10: 48,
-    11: 64,
-    12: 9999,
-    true: 8,
-    button: 12,
-    card: 16,
-    input: 8
+    1: 4,
+    2: 8,
+    3: 12,
+    4: 16,
+    5: 20,
+    6: 24,
+    true: 12
   },
   size: {
     0: 0,
@@ -30722,10 +30696,7 @@ var tokens = (0, import_core23.createTokens)({
     14: 80,
     15: 96,
     16: 128,
-    true: 16,
-    buttonHeight: 50,
-    inputHeight: 56,
-    cardPadding: 16
+    true: 16
   },
   space: {
     0: 0,
@@ -30739,14 +30710,11 @@ var tokens = (0, import_core23.createTokens)({
     8: 32,
     9: 36,
     10: 40,
-    11: 48,
-    12: 56,
     true: 16,
     "-1": -4,
     "-2": -8,
     "-3": -12,
-    "-4": -16,
-    "-5": -20
+    "-4": -16
   },
   zIndex: {
     0: 0,
@@ -30757,35 +30725,23 @@ var tokens = (0, import_core23.createTokens)({
     5: 500
   }
 });
-var ravenDarkTheme = {
-  background: ravenColors.background,
-  backgroundHover: ravenColors.surfaceElevated,
-  backgroundPress: ravenColors.surfacePressed,
-  backgroundFocus: ravenColors.surfaceElevated,
-  backgroundStrong: ravenColors.cardSurface,
+var lightTheme = {
+  background: "#FFFFFF",
+  backgroundHover: "#F5F5F5",
+  backgroundPress: "#E5E5E5",
+  backgroundFocus: "#F5F5F5",
+  backgroundStrong: "#FFFFFF",
   backgroundTransparent: "transparent",
-  color: ravenColors.textPrimary,
-  colorHover: ravenColors.textPrimary,
-  colorPress: ravenColors.textSecondary,
-  colorFocus: ravenColors.textPrimary,
+  color: "#000000",
+  colorHover: "#000000",
+  colorPress: "#525252",
+  colorFocus: "#000000",
   colorTransparent: "transparent",
-  borderColor: ravenColors.border,
-  borderColorHover: ravenColors.primaryAccent,
-  borderColorFocus: ravenColors.primaryAccent,
-  borderColorPress: ravenColors.border,
-  placeholderColor: ravenColors.textSecondary,
-  blue1: ravenColors.primaryAccentDark,
-  blue2: ravenColors.primaryAccent,
-  blue3: ravenColors.primaryAccentLight,
-  blue4: ravenColors.primaryAccent,
-  blue5: ravenColors.primaryAccent,
-  blue6: ravenColors.primaryAccent,
-  blue7: ravenColors.primaryAccent,
-  blue8: ravenColors.primaryAccent,
-  blue9: ravenColors.primaryAccent,
-  blue10: ravenColors.primaryAccentLight,
-  blue11: ravenColors.textPrimary,
-  blue12: ravenColors.textPrimary
+  borderColor: "#E5E5E5",
+  borderColorHover: "#D4D4D4",
+  borderColorFocus: "#3B82F6",
+  borderColorPress: "#D4D4D4",
+  placeholderColor: "#A3A3A3"
 };
 var animations = createAnimations({
   fast: {
@@ -30825,8 +30781,8 @@ var media = createMedia({
 var tamaguiConfig = createTamagui({
   tokens,
   themes: {
-    dark: ravenDarkTheme,
-    light: ravenDarkTheme
+    light: lightTheme,
+    dark: lightTheme
   },
   fonts: {
     heading: interFont,
@@ -30834,30 +30790,9 @@ var tamaguiConfig = createTamagui({
   },
   shorthands,
   animations,
-  media,
-  defaultTheme: "dark"
+  media
 });
 var tamagui_config_default = tamaguiConfig;
-var RAVEN_COLORS = ravenColors;
-var RAVEN_SPACING = {
-  xs: 4,
-  sm: 8,
-  md: 16,
-  lg: 24,
-  xl: 32,
-  xxl: 48
-};
-var RAVEN_RADIUS = {
-  button: 12,
-  card: 16,
-  input: 8
-};
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  RAVEN_COLORS,
-  RAVEN_RADIUS,
-  RAVEN_SPACING
-});
 /*! Bundled license information:
 
 tabbable/dist/index.js:

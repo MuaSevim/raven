@@ -22,6 +22,8 @@ import {
   TravelerFeedScreen,
   ShipmentDetailsScreen,
   CreateShipmentScreen,
+  FlightSearchScreen,
+  PostTripScreen,
 } from './src/screens';
 import { Shipment } from './src/data/mockData';
 
@@ -36,6 +38,8 @@ export type RootStackParamList = {
   TravelerFeed: undefined;
   ShipmentDetails: { shipment: Shipment };
   CreateShipment: undefined;
+  FlightSearch: undefined;
+  PostTrip: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -87,6 +91,16 @@ export default function App() {
               name="CreateShipment" 
               component={CreateShipmentScreen}
               options={{ animation: 'slide_from_bottom' }}
+            />
+            <Stack.Screen 
+              name="FlightSearch" 
+              component={FlightSearchScreen}
+              options={{ animation: 'slide_from_right' }}
+            />
+            <Stack.Screen 
+              name="PostTrip" 
+              component={PostTripScreen}
+              options={{ animation: 'slide_from_right' }}
             />
           </Stack.Navigator>
         </NavigationContainer>

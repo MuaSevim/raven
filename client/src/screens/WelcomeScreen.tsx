@@ -15,7 +15,7 @@ import {
 } from '../config/theme.config';
 
 // Reusable Components
-import { RavenButton } from '../components';
+import { RavenButton, TabBar } from '../components';
 
 // Navigation Types
 import { RootStackParamList } from '../../App';
@@ -85,12 +85,12 @@ export const WelcomeScreen: React.FC = () => {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
 
   const handleSendPath = () => {
-    // Navigate to Create Shipment flow
-    navigation.navigate('CreateShipment');
+    // Navigate to Flight Search - Senders find Travelers
+    navigation.navigate('FlightSearch');
   };
 
   const handleTravelPath = () => {
-    // Navigate to Traveler Feed
+    // Navigate to Traveler Feed - View available deliveries first
     navigation.navigate('TravelerFeed');
   };
 
@@ -152,49 +152,15 @@ export const WelcomeScreen: React.FC = () => {
         </YStack>
       </ScrollView>
 
-      {/* ========== BOTTOM TAB BAR (Static Preview) ========== */}
-      <XStack
-        height={70}
-        backgroundColor={RAVEN_LIGHT.background}
-        borderTopWidth={1}
-        borderTopColor={RAVEN_LIGHT.border}
-        alignItems="center"
-        justifyContent="space-around"
-        paddingHorizontal="$4"
-      >
-        <TabBarItem icon="home" label="Home" active />
-        <TabBarItem icon="add-circle" label="Deliveries" />
-        <TabBarItem icon="location" label="Trips" />
-        <TabBarItem icon="person" label="Profile" />
-      </XStack>
+      {/* ========== BOTTOM TAB BAR ========== */}
+      <TabBar
+        items={[
+          { icon: 'home', label: 'Home', active: true },
+          { icon: 'add-circle', label: 'Deliveries' },
+          { icon: 'location', label: 'Trips' },
+          { icon: 'person', label: 'Profile' },
+        ]}
+      />
     </SafeAreaView>
   );
 };
-
-// ============================================
-// TAB BAR ITEM (Inline - preview only)
-// ============================================
-import { Ionicons } from '@expo/vector-icons';
-
-interface TabBarItemProps {
-  icon: keyof typeof Ionicons.glyphMap;
-  label: string;
-  active?: boolean;
-}
-
-const TabBarItem: React.FC<TabBarItemProps> = ({ icon, label, active = false }) => (
-  <YStack alignItems="center" space="$1">
-    <Ionicons
-      name={active ? icon : (`${icon}-outline` as keyof typeof Ionicons.glyphMap)}
-      size={24}
-      color={active ? RAVEN_LIGHT.primaryText : RAVEN_LIGHT.secondaryText}
-    />
-    <Text
-      fontSize={RAVEN_TYPOGRAPHY.xs}
-      color={active ? RAVEN_LIGHT.primaryText : RAVEN_LIGHT.secondaryText}
-      fontWeight={active ? RAVEN_TYPOGRAPHY.medium : RAVEN_TYPOGRAPHY.regular}
-    >
-      {label}
-    </Text>
-  </YStack>
-);

@@ -12,8 +12,9 @@ interface SocialButtonProps {
 /**
  * SocialButton - Circular button for social login providers
  * Used for Apple, Google, Meta sign-in options
+ * Optimized with React.memo
  */
-export const SocialButton: React.FC<SocialButtonProps> = ({
+export const SocialButton: React.FC<SocialButtonProps> = React.memo(({
   icon,
   onPress,
   size = RAVEN_DIMENSIONS.socialButtonSize,
@@ -35,4 +36,6 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
       resizeMode="contain"
     />
   </TouchableOpacity>
-);
+));
+
+SocialButton.displayName = 'SocialButton';

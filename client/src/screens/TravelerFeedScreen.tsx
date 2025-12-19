@@ -15,7 +15,7 @@ import {
 } from '../config/theme.config';
 
 // Components
-import { ShipmentCard } from '../components/ShipmentCard';
+import { ShipmentCard, TabBar, FloatingActionButton } from '../components';
 
 // Data
 import { MOCK_SHIPMENTS, Shipment } from '../data/mockData';
@@ -170,74 +170,21 @@ export const TravelerFeedScreen: React.FC = () => {
         />
 
         {/* ========== FLOATING ACTION BUTTON ========== */}
-        <TouchableOpacity
-          onPress={() => navigation.navigate('CreateShipment')}
-          activeOpacity={0.8}
-          style={{
-            position: 'absolute',
-            bottom: 90,
-            alignSelf: 'center',
-            backgroundColor: RAVEN_LIGHT.primaryText,
-            width: 56,
-            height: 56,
-            borderRadius: 28,
-            justifyContent: 'center',
-            alignItems: 'center',
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.2,
-            shadowRadius: 8,
-            elevation: 8,
-          }}
-        >
-          <Ionicons name="add" size={28} color={RAVEN_LIGHT.buttonPrimaryText} />
-        </TouchableOpacity>
+        <FloatingActionButton
+          onPress={() => navigation.navigate('PostTrip')}
+          icon="add"
+        />
 
         {/* ========== BOTTOM TAB BAR ========== */}
-        <XStack
-          height={70}
-          backgroundColor={RAVEN_LIGHT.background}
-          borderTopWidth={1}
-          borderTopColor={RAVEN_LIGHT.border}
-          alignItems="center"
-          justifyContent="space-around"
-          paddingHorizontal="$4"
-        >
-          <TabBarItem icon="home" label="Home" onPress={() => navigation.goBack()} />
-          <TabBarItem icon="add-circle" label="Deliveries" active />
-          <TabBarItem icon="location" label="Trips" />
-          <TabBarItem icon="person" label="Profile" />
-        </XStack>
+        <TabBar
+          items={[
+            { icon: 'home', label: 'Home', onPress: () => navigation.navigate('Welcome') },
+            { icon: 'add-circle', label: 'Deliveries', active: true },
+            { icon: 'airplane', label: 'Post Trip', onPress: () => navigation.navigate('PostTrip') },
+            { icon: 'person', label: 'Profile' },
+          ]}
+        />
       </YStack>
     </SafeAreaView>
   );
 };
-
-// ============================================
-// TAB BAR ITEM (Inline)
-// ============================================
-interface TabBarItemProps {
-  icon: keyof typeof Ionicons.glyphMap;
-  label: string;
-  active?: boolean;
-  onPress?: () => void;
-}
-
-const TabBarItem: React.FC<TabBarItemProps> = ({ icon, label, active = false, onPress }) => (
-  <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
-    <YStack alignItems="center" space="$1">
-      <Ionicons
-        name={active ? icon : (`${icon}-outline` as keyof typeof Ionicons.glyphMap)}
-        size={24}
-        color={active ? RAVEN_LIGHT.primaryText : RAVEN_LIGHT.secondaryText}
-      />
-      <Text
-        fontSize={RAVEN_TYPOGRAPHY.xs}
-        color={active ? RAVEN_LIGHT.primaryText : RAVEN_LIGHT.secondaryText}
-        fontWeight={active ? RAVEN_TYPOGRAPHY.medium : RAVEN_TYPOGRAPHY.regular}
-      >
-        {label}
-      </Text>
-    </YStack>
-  </TouchableOpacity>
-);

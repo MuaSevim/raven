@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { YStack, XStack, Text, Input, Image } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { RAVEN_COLORS, RAVEN_RADIUS } from '../config/tamagui.config';
+import { RAVEN_LIGHT, RAVEN_RADIUS } from '../config/theme.config';
 
 // Types
 interface Message {
@@ -194,7 +194,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, onCall }) => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: RAVEN_COLORS.background }}
+      style={{ flex: 1, backgroundColor: RAVEN_LIGHT.background }}
       edges={['top']}
     >
       <KeyboardAvoidingView
@@ -301,7 +301,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, onCall }) => {
                 backgroundColor="transparent"
                 borderWidth={0}
                 color="$ravenTextPrimary"
-                placeholderTextColor={RAVEN_COLORS.textSecondary}
+                placeholderTextColor={RAVEN_LIGHT.secondaryText}
                 fontSize={15}
                 paddingHorizontal={0}
                 onSubmitEditing={handleSend}

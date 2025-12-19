@@ -24,8 +24,9 @@ interface ShipmentCardProps {
 /**
  * ShipmentCard - Displays a single shipment listing
  * Used in TravelerFeedScreen to show available deliveries
+ * Optimized with React.memo
  */
-export const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment, onPress }) => {
+export const ShipmentCard: React.FC<ShipmentCardProps> = React.memo(({ shipment, onPress }) => {
   const { route, dateRange, price, item, sender } = shipment;
 
   return (
@@ -121,4 +122,6 @@ export const ShipmentCard: React.FC<ShipmentCardProps> = ({ shipment, onPress })
       </YStack>
     </TouchableOpacity>
   );
-};
+});
+
+ShipmentCard.displayName = 'ShipmentCard';

@@ -24,8 +24,9 @@ interface RavenInputProps {
 /**
  * RavenInput - Styled input field for the Raven Light theme
  * Uses React Native TextInput to avoid Tamagui iOS boolean type issues
+ * Optimized with React.memo for performance
  */
-export const RavenInput: React.FC<RavenInputProps> = ({
+export const RavenInput: React.FC<RavenInputProps> = React.memo(({
   label,
   placeholder,
   value,
@@ -64,7 +65,9 @@ export const RavenInput: React.FC<RavenInputProps> = ({
       />
     </View>
   </YStack>
-);
+));
+
+RavenInput.displayName = 'RavenInput';
 
 const styles = StyleSheet.create({
   inputContainer: {

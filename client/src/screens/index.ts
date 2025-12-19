@@ -6,3 +6,5 @@ export { TravelerFeedScreen } from './TravelerFeedScreen';
 export { ShipmentDetailsScreen } from './ShipmentDetailsScreen';
 export { CreateShipmentScreen } from './CreateShipmentScreen';
 export { ChatScreen } from './ChatScreen';
+export { FlightSearchScreen } from './FlightSearchScreen';
+export { PostTripScreen } from './PostTripScreen';
