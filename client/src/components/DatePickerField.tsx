@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -24,6 +24,8 @@ interface DatePickerFieldProps {
   onMonthChange: (month: string) => void;
   onYearChange: (year: string) => void;
   error?: string;
+  /** Auto-advance to next picker after selection */
+  autoAdvance?: boolean;
 }
 
 // ============================================
@@ -65,7 +67,7 @@ const getYears = (): { value: string; label: string }[] => {
 // ============================================
 // COMPONENT
 // ============================================
-export const DatePickerField: React.FC<DatePickerFieldProps> = ({
+export const DatePickerField: React.FC<DatePickerFieldProps> = React.memo(({
   label,
   day,
   month,
@@ -74,6 +76,7 @@ export const DatePickerField: React.FC<DatePickerFieldProps> = ({
   onMonthChange,
   onYearChange,
   error,
+  autoAdvance = true,
 }) => {
   const [pickerType, setPickerType] = useState<PickerType | null>(null);
 
@@ -85,16 +88,37 @@ export const DatePickerField: React.FC<DatePickerFieldProps> = ({
     setPickerType(null);
   }, []);
 
+  // Auto-advance to the next picker
+  const advanceToNextPicker = useCallback((currentType: PickerType) => {
+    if (!autoAdvance) {
+      closePicker();
+      return;
+    }
+    
+    // Small delay for smooth UX
+    setTimeout(() => {
+      if (currentType === 'day' && !month) {
+        setPickerType('month');
+      } else if (currentType === 'month' && !year) {
+        setPickerType('year');
+      } else {
+        setPickerType(null);
+      }
+    }, 150);
+  }, [autoAdvance, month, year, closePicker]);
+
   const handleSelect = useCallback((value: string) => {
     if (pickerType === 'day') {
       onDayChange(value);
+      advanceToNextPicker('day');
     } else if (pickerType === 'month') {
       onMonthChange(value);
+      advanceToNextPicker('month');
     } else if (pickerType === 'year') {
       onYearChange(value);
+      closePicker();
     }
-    closePicker();
-  }, [pickerType, onDayChange, onMonthChange, onYearChange, closePicker]);
+  }, [pickerType, onDayChange, onMonthChange, onYearChange, advanceToNextPicker, closePicker]);
 
   const getPickerData = () => {
     switch (pickerType) {
@@ -235,7 +259,9 @@ export const DatePickerField: React.FC<DatePickerFieldProps> = ({
       </Modal>
     </View>
   );
-};
+});
+
+DatePickerField.displayName = 'DatePickerField';
 
 // ============================================
 // STYLES

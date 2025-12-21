@@ -30743,6 +30743,24 @@ var lightTheme = {
   borderColorPress: "#D4D4D4",
   placeholderColor: "#A3A3A3"
 };
+var darkTheme = {
+  background: "#121212",
+  backgroundHover: "#1E1E1E",
+  backgroundPress: "#2A2A2A",
+  backgroundFocus: "#1E1E1E",
+  backgroundStrong: "#0A0A0A",
+  backgroundTransparent: "transparent",
+  color: "#FFFFFF",
+  colorHover: "#F5F5F5",
+  colorPress: "#D4D4D4",
+  colorFocus: "#FFFFFF",
+  colorTransparent: "transparent",
+  borderColor: "#2A2A2A",
+  borderColorHover: "#3A3A3A",
+  borderColorFocus: "#3B82F6",
+  borderColorPress: "#3A3A3A",
+  placeholderColor: "#6B6B6B"
+};
 var animations = createAnimations({
   fast: {
     type: "spring",
@@ -30782,7 +30800,7 @@ var tamaguiConfig = createTamagui({
   tokens,
   themes: {
     light: lightTheme,
-    dark: lightTheme
+    dark: darkTheme
   },
   fonts: {
     heading: interFont,

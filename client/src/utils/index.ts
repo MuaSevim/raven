@@ -37,7 +37,7 @@ export {
 // Legacy exports (for backward compatibility)
 export {
   isValidEmail,
-  validatePassword,
+  validatePassword as legacyValidatePassword,
   isValidPassword,
   validateDOB,
   isValidPhoneNumber,

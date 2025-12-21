@@ -82,7 +82,7 @@ const DEAL_INFO = {
 };
 
 // Avatar Component
-const Avatar: React.FC<{ isOutgoing?: boolean; size?: number }> = ({
+const Avatar: React.FC<{ isOutgoing?: boolean; size?: number }> = React.memo(({ 
   isOutgoing = false,
   size = 32,
 }) => (
@@ -90,18 +90,20 @@ const Avatar: React.FC<{ isOutgoing?: boolean; size?: number }> = ({
     width={size}
     height={size}
     borderRadius={size / 2}
-    backgroundColor={isOutgoing ? '$ravenPrimary' : '$ravenBorder'}
+    backgroundColor={isOutgoing ? RAVEN_LIGHT.buttonPrimary : RAVEN_LIGHT.border}
     alignItems="center"
     justifyContent="center"
   >
-    <Text fontSize={size * 0.4} color="$ravenTextPrimary">
+    <Text fontSize={size * 0.4} color={RAVEN_LIGHT.primaryText}>
       {isOutgoing ? 'Y' : 'L'}
     </Text>
   </YStack>
-);
+));
+
+Avatar.displayName = 'Avatar';
 
 // Message Bubble Component
-const MessageBubble: React.FC<{ message: Message }> = ({ message }) => {
+const MessageBubble: React.FC<{ message: Message }> = React.memo(({ message }) => {
   const isOutgoing = message.isOutgoing;
 
   return (
@@ -119,7 +121,7 @@ const MessageBubble: React.FC<{ message: Message }> = ({ message }) => {
 
       <YStack maxWidth="75%">
         <YStack
-          backgroundColor={isOutgoing ? '#000000' : '$ravenCard'}
+          backgroundColor={isOutgoing ? RAVEN_LIGHT.buttonPrimary : RAVEN_LIGHT.inputBackground}
           paddingHorizontal="$4"
           paddingVertical="$3"
           borderRadius={RAVEN_RADIUS.card}
@@ -127,7 +129,7 @@ const MessageBubble: React.FC<{ message: Message }> = ({ message }) => {
           borderTopRightRadius={isOutgoing ? 4 : RAVEN_RADIUS.card}
         >
           <Text
-            color="$ravenTextPrimary"
+            color={isOutgoing ? RAVEN_LIGHT.buttonPrimaryText : RAVEN_LIGHT.primaryText}
             fontSize={15}
             lineHeight={22}
           >
@@ -135,7 +137,7 @@ const MessageBubble: React.FC<{ message: Message }> = ({ message }) => {
           </Text>
         </YStack>
         <Text
-          color="$ravenTextSecondary"
+          color={RAVEN_LIGHT.secondaryText}
           fontSize={11}
           marginTop="$1"
           textAlign={isOutgoing ? 'right' : 'left'}
@@ -152,28 +154,30 @@ const MessageBubble: React.FC<{ message: Message }> = ({ message }) => {
       )}
     </XStack>
   );
-};
+});
+
+MessageBubble.displayName = 'MessageBubble';
 
 // Phone Icon Component
-const PhoneIcon: React.FC = () => (
-  <Text fontSize={20} color="$ravenTextSecondary">
+const PhoneIcon: React.FC = React.memo(() => (
+  <Text fontSize={20} color={RAVEN_LIGHT.secondaryText}>
     📞
   </Text>
-);
+));
 
 // Gallery Icon Component
-const GalleryIcon: React.FC = () => (
-  <Text fontSize={20} color="$ravenTextSecondary">
+const GalleryIcon: React.FC = React.memo(() => (
+  <Text fontSize={20} color={RAVEN_LIGHT.secondaryText}>
     🖼️
   </Text>
-);
+));
 
 // Back Arrow Component
-const BackArrow: React.FC = () => (
-  <Text fontSize={24} color="$ravenTextPrimary">
+const BackArrow: React.FC = React.memo(() => (
+  <Text fontSize={24} color={RAVEN_LIGHT.primaryText}>
     ←
   </Text>
-);
+));
 
 export const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, onCall }) => {
   const [messageText, setMessageText] = useState('');
@@ -210,9 +214,9 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, onCall }) => {
             alignItems="center"
             justifyContent="space-between"
             paddingHorizontal="$4"
-            backgroundColor="$ravenBackground"
+            backgroundColor={RAVEN_LIGHT.background}
             borderBottomWidth={1}
-            borderBottomColor="$ravenBorder"
+            borderBottomColor={RAVEN_LIGHT.border}
           >
             {/* Back Button */}
             <XStack
@@ -228,7 +232,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, onCall }) => {
             <Text
               fontSize={18}
               fontWeight="600"
-              color="$ravenTextPrimary"
+              color={RAVEN_LIGHT.primaryText}
             >
               {OTHER_USER.name}
             </Text>
@@ -253,7 +257,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, onCall }) => {
           >
             <Text
               fontSize={14}
-              color="$ravenPrimary"
+              color={RAVEN_LIGHT.info}
               fontWeight="500"
             >
               Re: {DEAL_INFO.title} - {DEAL_INFO.price}
@@ -279,13 +283,13 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, onCall }) => {
         <YStack
           paddingHorizontal="$4"
           paddingVertical="$3"
-          backgroundColor="$ravenBackground"
+          backgroundColor={RAVEN_LIGHT.background}
           borderTopWidth={1}
-          borderTopColor="$ravenBorder"
+          borderTopColor={RAVEN_LIGHT.border}
         >
           <SafeAreaView edges={['bottom']}>
             <XStack
-              backgroundColor="$ravenCard"
+              backgroundColor={RAVEN_LIGHT.inputBackground}
               borderRadius={24}
               alignItems="center"
               paddingHorizontal="$4"
@@ -300,7 +304,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, onCall }) => {
                 onChangeText={setMessageText}
                 backgroundColor="transparent"
                 borderWidth={0}
-                color="$ravenTextPrimary"
+                color={RAVEN_LIGHT.primaryText}
                 placeholderTextColor={RAVEN_LIGHT.secondaryText}
                 fontSize={15}
                 paddingHorizontal={0}
