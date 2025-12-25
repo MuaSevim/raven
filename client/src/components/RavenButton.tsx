@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { Button, Text } from 'tamagui';
+import { TouchableOpacity, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import {
   RAVEN_LIGHT,
   RAVEN_RADIUS,
@@ -18,6 +18,7 @@ interface RavenButtonProps {
 /**
  * RavenButton - Primary action button for the Raven Light theme
  * Dark background (#1A1A1A), white text, rounded corners
+ * Uses React Native TouchableOpacity to avoid Tamagui iOS boolean type issues
  * Optimized with useMemo for color calculations
  */
 export const RavenButton: React.FC<RavenButtonProps> = React.memo(({
@@ -27,58 +28,79 @@ export const RavenButton: React.FC<RavenButtonProps> = React.memo(({
   variant = 'primary',
   fullWidth = true,
 }) => {
-  const getBackgroundColor = useCallback(() => {
-    if (disabled) return '#CCCCCC';
-    switch (variant) {
-      case 'primary':
-        return RAVEN_LIGHT.buttonPrimary;
-      case 'secondary':
-        return RAVEN_LIGHT.inputBackground;
-      case 'outline':
-        return 'transparent';
-      default:
-        return RAVEN_LIGHT.buttonPrimary;
-    }
-  }, [disabled, variant]);
+  const buttonStyle = useMemo((): ViewStyle => {
+    let backgroundColor: string;
+    let borderWidth = 0;
+    let borderColor = 'transparent';
 
-  const getTextColor = useCallback(() => {
-    if (disabled) return '#888888';
-    switch (variant) {
-      case 'primary':
-        return RAVEN_LIGHT.buttonPrimaryText;
-      case 'secondary':
-      case 'outline':
-        return RAVEN_LIGHT.primaryText;
-      default:
-        return RAVEN_LIGHT.buttonPrimaryText;
+    if (disabled) {
+      backgroundColor = '#CCCCCC';
+    } else {
+      switch (variant) {
+        case 'primary':
+          backgroundColor = RAVEN_LIGHT.buttonPrimary;
+          break;
+        case 'secondary':
+          backgroundColor = RAVEN_LIGHT.inputBackground;
+          break;
+        case 'outline':
+          backgroundColor = 'transparent';
+          borderWidth = 1;
+          borderColor = RAVEN_LIGHT.border;
+          break;
+        default:
+          backgroundColor = RAVEN_LIGHT.buttonPrimary;
+      }
     }
-  }, [disabled, variant]);
 
-  const pressStyle = useMemo(() => ({
-    backgroundColor: disabled ? '#CCCCCC' : RAVEN_LIGHT.buttonPrimaryPressed,
-    opacity: 0.9,
-  }), [disabled]);
+    return {
+      height: RAVEN_DIMENSIONS.buttonHeight,
+      backgroundColor,
+      borderRadius: RAVEN_RADIUS.button,
+      borderWidth,
+      borderColor,
+      width: fullWidth ? '100%' : undefined,
+      alignItems: 'center',
+      justifyContent: 'center',
+    };
+  }, [disabled, variant, fullWidth]);
+
+  const textStyle = useMemo((): TextStyle => {
+    let color: string;
+    if (disabled) {
+      color = '#888888';
+    } else {
+      switch (variant) {
+        case 'primary':
+          color = RAVEN_LIGHT.buttonPrimaryText;
+          break;
+        case 'secondary':
+        case 'outline':
+          color = RAVEN_LIGHT.primaryText;
+          break;
+        default:
+          color = RAVEN_LIGHT.buttonPrimaryText;
+      }
+    }
+
+    return {
+      color,
+      fontWeight: RAVEN_TYPOGRAPHY.semibold as TextStyle['fontWeight'],
+      fontSize: RAVEN_TYPOGRAPHY.md,
+    };
+  }, [disabled, variant]);
 
   return (
-    <Button
-      height={RAVEN_DIMENSIONS.buttonHeight}
-      backgroundColor={getBackgroundColor()}
-      borderRadius={RAVEN_RADIUS.button}
-      borderWidth={variant === 'outline' ? 1 : 0}
-      borderColor={variant === 'outline' ? RAVEN_LIGHT.border : 'transparent'}
+    <TouchableOpacity
+      style={buttonStyle}
       onPress={onPress}
       disabled={disabled}
-      width={fullWidth ? '100%' : 'auto'}
-      pressStyle={pressStyle}
+      activeOpacity={0.9}
     >
-      <Text
-        color={getTextColor()}
-        fontWeight={RAVEN_TYPOGRAPHY.semibold}
-        fontSize={RAVEN_TYPOGRAPHY.md}
-      >
+      <Text style={textStyle}>
         {children}
       </Text>
-    </Button>
+    </TouchableOpacity>
   );
 });
 

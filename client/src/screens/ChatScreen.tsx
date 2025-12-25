@@ -4,8 +4,10 @@ import {
   KeyboardAvoidingView,
   Platform,
   ListRenderItem,
+  TextInput,
+  StyleSheet,
 } from 'react-native';
-import { YStack, XStack, Text, Input, Image } from 'tamagui';
+import { YStack, XStack, Text, Image } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RAVEN_LIGHT, RAVEN_RADIUS } from '../config/theme.config';
 
@@ -297,17 +299,12 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, onCall }) => {
               minHeight={48}
             >
               {/* Text Input */}
-              <Input
-                flex={1}
+              <TextInput
+                style={styles.chatInput}
                 placeholder="Type a message..."
                 value={messageText}
                 onChangeText={setMessageText}
-                backgroundColor="transparent"
-                borderWidth={0}
-                color={RAVEN_LIGHT.primaryText}
                 placeholderTextColor={RAVEN_LIGHT.secondaryText}
-                fontSize={15}
-                paddingHorizontal={0}
                 onSubmitEditing={handleSend}
                 returnKeyType="send"
               />
@@ -327,5 +324,15 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, onCall }) => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  chatInput: {
+    flex: 1,
+    fontSize: 15,
+    color: RAVEN_LIGHT.primaryText,
+    backgroundColor: 'transparent',
+    paddingHorizontal: 0,
+  },
+});
 
 export default ChatScreen;
