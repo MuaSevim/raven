@@ -94,8 +94,10 @@ export const RavenButton: React.FC<RavenButtonProps> = React.memo(({
     <TouchableOpacity
       style={buttonStyle}
       onPress={onPress}
-      disabled={disabled}
+      disabled={Boolean(disabled)}
       activeOpacity={0.9}
+      accessible={true}
+      accessibilityRole="button"
     >
       <Text style={textStyle}>
         {children}

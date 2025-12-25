@@ -1,6 +1,6 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
-import { YStack, XStack, Text, Image, ScrollView } from 'tamagui';
+import { TouchableOpacity, ScrollView, Image } from 'react-native';
+import { YStack, XStack, Text } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -51,8 +51,7 @@ const RoleCard: React.FC<RoleCardProps> = ({
       {/* Image */}
       <Image
         source={image}
-        width="100%"
-        height={160}
+        style={{ width: '100%', height: 160 }}
         resizeMode="cover"
       />
 
@@ -102,7 +101,7 @@ export const WelcomeScreen: React.FC = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: RAVEN_LIGHT.background }}>
       <ScrollView
-        flex={1}
+        style={{ flex: 1 }}
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
       >

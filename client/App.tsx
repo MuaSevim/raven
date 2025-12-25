@@ -12,7 +12,7 @@ import {
 } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
 
-import tamaguiConfig from './src/config/tamagui.config';
+import config from './src/config/tamagui.config';
 import { RAVEN_LIGHT } from './src/config/theme.config';
 import {
   LoginScreen,
@@ -65,9 +65,9 @@ export default function App() {
   }
 
   return (
-    <TamaguiProvider config={tamaguiConfig} defaultTheme="light">
+    <TamaguiProvider config={config} defaultTheme="light">
       <SafeAreaProvider>
-        <StatusBar style="dark" />
+        <StatusBar style="dark" translucent={true} backgroundColor="transparent" />
         <NavigationContainer>
           <Stack.Navigator
             initialRouteName="Login"

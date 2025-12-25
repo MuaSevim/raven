@@ -1,6 +1,6 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
-import { YStack, XStack, Text, Image } from 'tamagui';
+import { TouchableOpacity, Image } from 'react-native';
+import { YStack, XStack, Text } from 'tamagui';
 import { Ionicons } from '@expo/vector-icons';
 
 // Design System
@@ -113,8 +113,7 @@ export const ShipmentCard: React.FC<ShipmentCardProps> = React.memo(({ shipment,
             {/* Placeholder city skyline image */}
             <Image
               source={{ uri: `https://picsum.photos/200/160?random=${shipment.id}` }}
-              width={100}
-              height={80}
+              style={{ width: 100, height: 80 }}
               resizeMode="cover"
             />
           </YStack>

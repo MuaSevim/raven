@@ -6,8 +6,9 @@ import {
   ListRenderItem,
   TextInput,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
-import { YStack, XStack, Text, Image } from 'tamagui';
+import { YStack, XStack, Text } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RAVEN_LIGHT, RAVEN_RADIUS } from '../config/theme.config';
 
@@ -221,14 +222,13 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, onCall }) => {
             borderBottomColor={RAVEN_LIGHT.border}
           >
             {/* Back Button */}
-            <XStack
-              alignItems="center"
-              pressStyle={{ opacity: 0.7 }}
+            <TouchableOpacity
               onPress={onBack}
+              activeOpacity={0.7}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
               <BackArrow />
-            </XStack>
+            </TouchableOpacity>
 
             {/* User Name */}
             <Text
@@ -240,13 +240,13 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, onCall }) => {
             </Text>
 
             {/* Call Button */}
-            <XStack
-              pressStyle={{ opacity: 0.7 }}
+            <TouchableOpacity
               onPress={onCall}
+              activeOpacity={0.7}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
               <PhoneIcon />
-            </XStack>
+            </TouchableOpacity>
           </XStack>
 
           {/* Deal Info Sub-header */}
@@ -310,13 +310,13 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ onBack, onCall }) => {
               />
 
               {/* Gallery Icon */}
-              <XStack
-                pressStyle={{ opacity: 0.7 }}
-                marginLeft="$2"
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={{ marginLeft: 8 }}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
                 <GalleryIcon />
-              </XStack>
+              </TouchableOpacity>
             </XStack>
           </SafeAreaView>
         </YStack>

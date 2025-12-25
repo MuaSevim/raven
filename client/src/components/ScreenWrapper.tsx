@@ -4,8 +4,9 @@ import {
   Platform,
   StyleSheet,
   ViewStyle,
+  ScrollView,
 } from 'react-native';
-import { YStack, ScrollView } from 'tamagui';
+import { YStack } from 'tamagui';
 import { SafeAreaView, Edge } from 'react-native-safe-area-context';
 import { RAVEN_LIGHT, RAVEN_SPACING } from '../config/theme.config';
 
@@ -80,7 +81,7 @@ export const ScreenWrapper = memo<ScreenWrapperProps>(({
 
   const scrollContent = scrollable ? (
     <ScrollView
-      flex={1}
+      style={{ flex: 1 }}
       contentContainerStyle={styles.scrollContent}
       showsVerticalScrollIndicator={showScrollIndicator}
       keyboardShouldPersistTaps="handled"

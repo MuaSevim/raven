@@ -5,20 +5,12 @@ import { createMedia } from '@tamagui/react-native-media-driver'
 import { createAnimations } from '@tamagui/animations-react-native'
 
 // ============================================
-// FONTS
+// FONTS - Simple configuration
 // ============================================
-const interFont = createInterFont({
-  face: {
-    400: { normal: 'Inter_400Regular' },
-    500: { normal: 'Inter_500Medium' },
-    600: { normal: 'Inter_600SemiBold' },
-    700: { normal: 'Inter_700Bold' },
-    800: { normal: 'Inter_800ExtraBold' },
-  },
-})
+const interFont = createInterFont()
 
 // ============================================
-// TOKENS (No spread operators - explicit values only)
+// TOKENS - Explicit values, no spreads
 // ============================================
 const tokens = createTokens({
   color: {
@@ -98,7 +90,7 @@ const tokens = createTokens({
 })
 
 // ============================================
-// LIGHT THEME
+// THEMES - Explicit string values only
 // ============================================
 const lightTheme = {
   background: '#FFFFFF',
@@ -119,9 +111,6 @@ const lightTheme = {
   placeholderColor: '#A3A3A3',
 }
 
-// ============================================
-// DARK THEME (Charcoal)
-// ============================================
 const darkTheme = {
   background: '#121212',
   backgroundHover: '#1E1E1E',
@@ -142,7 +131,7 @@ const darkTheme = {
 }
 
 // ============================================
-// ANIMATIONS
+// ANIMATIONS - Simple config
 // ============================================
 const animations = createAnimations({
   fast: {
@@ -185,10 +174,10 @@ const media = createMedia({
 })
 
 // ============================================
-// CREATE TAMAGUI CONFIG
+// CREATE CONFIG - Simple, no complex spreads
 // ============================================
-const tamaguiConfig = createTamagui({
-  tokens,
+const config = createTamagui({
+  tokens: tokens,
   themes: {
     light: lightTheme,
     dark: darkTheme,
@@ -197,15 +186,15 @@ const tamaguiConfig = createTamagui({
     heading: interFont,
     body: interFont,
   },
-  shorthands,
-  animations,
-  media,
+  shorthands: shorthands,
+  animations: animations,
+  media: media,
 })
 
-export default tamaguiConfig
-
-export type Conf = typeof tamaguiConfig
+export type AppConfig = typeof config
 
 declare module 'tamagui' {
-  interface TamaguiCustomConfig extends Conf {}
+  interface TamaguiCustomConfig extends AppConfig {}
 }
+
+export default config

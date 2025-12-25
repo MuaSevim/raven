@@ -1,6 +1,6 @@
 import React from 'react';
-import { TouchableOpacity, Alert } from 'react-native';
-import { YStack, XStack, Text, ScrollView } from 'tamagui';
+import { TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { YStack, XStack, Text } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -131,7 +131,7 @@ export const ShipmentDetailsScreen: React.FC = () => {
       </XStack>
 
       <ScrollView
-        flex={1}
+        style={{ flex: 1 }}
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
       >

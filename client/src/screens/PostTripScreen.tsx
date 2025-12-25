@@ -6,8 +6,9 @@ import {
   StyleSheet,
   Alert,
   TextInput,
+  ScrollView,
 } from 'react-native';
-import { YStack, XStack, ScrollView } from 'tamagui';
+import { YStack, XStack } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -644,7 +645,7 @@ export const PostTripScreen: React.FC = () => {
       {renderStepIndicator()}
 
       <ScrollView
-        flex={1}
+        style={{ flex: 1 }}
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"

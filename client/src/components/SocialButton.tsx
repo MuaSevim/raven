@@ -1,6 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
-import { Image } from 'tamagui';
+import { TouchableOpacity, Image } from 'react-native';
 import { RAVEN_DIMENSIONS } from '../config/theme.config';
 
 interface SocialButtonProps {
@@ -31,8 +30,10 @@ export const SocialButton: React.FC<SocialButtonProps> = React.memo(({
   >
     <Image
       source={icon}
-      width={RAVEN_DIMENSIONS.iconSize}
-      height={RAVEN_DIMENSIONS.iconSize}
+      style={{
+        width: RAVEN_DIMENSIONS.iconSize,
+        height: RAVEN_DIMENSIONS.iconSize,
+      }}
       resizeMode="contain"
     />
   </TouchableOpacity>

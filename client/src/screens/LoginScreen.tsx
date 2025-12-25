@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Alert } from 'react-native';
-import { YStack, XStack, Text, Image, ScrollView, Separator } from 'tamagui';
+import { Alert, ScrollView, Image, View, StyleSheet } from 'react-native';
+import { YStack, XStack, Text } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -77,7 +77,7 @@ export const LoginScreen: React.FC = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: RAVEN_LIGHT.background }}>
       <ScrollView
-        flex={1}
+        style={{ flex: 1 }}
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
@@ -93,8 +93,10 @@ export const LoginScreen: React.FC = () => {
             {/* Raven Logo */}
             <Image
               source={RAVEN_ASSETS.logo}
-              width={RAVEN_DIMENSIONS.logoSize}
-              height={RAVEN_DIMENSIONS.logoSize}
+              style={{
+                width: RAVEN_DIMENSIONS.logoSize,
+                height: RAVEN_DIMENSIONS.logoSize,
+              }}
               resizeMode="contain"
             />
 
@@ -163,7 +165,7 @@ export const LoginScreen: React.FC = () => {
             marginVertical="$5"
             width="100%"
           >
-            <Separator borderColor={RAVEN_LIGHT.divider} flex={1} />
+            <View style={{ flex: 1, height: 1, backgroundColor: RAVEN_LIGHT.divider }} />
             <Text
               color={RAVEN_LIGHT.secondaryText}
               fontSize={RAVEN_TYPOGRAPHY.sm}
@@ -171,7 +173,7 @@ export const LoginScreen: React.FC = () => {
             >
               OR
             </Text>
-            <Separator borderColor={RAVEN_LIGHT.divider} flex={1} />
+            <View style={{ flex: 1, height: 1, backgroundColor: RAVEN_LIGHT.divider }} />
           </XStack>
 
           {/* ========== SOCIAL LOGIN SECTION ========== */}

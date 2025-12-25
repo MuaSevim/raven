@@ -6,8 +6,9 @@ import {
   Modal,
   FlatList,
   View,
+  ScrollView,
 } from 'react-native';
-import { YStack, XStack, Text, ScrollView } from 'tamagui';
+import { YStack, XStack, Text } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -455,7 +456,7 @@ export const SignUpScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
-        flex={1}
+        style={{ flex: 1 }}
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
