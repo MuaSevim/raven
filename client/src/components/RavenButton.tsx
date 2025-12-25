@@ -6,6 +6,7 @@ import {
   RAVEN_DIMENSIONS,
   RAVEN_TYPOGRAPHY,
 } from '../config/theme.config';
+import { parseBoolean } from '../utils/dataHelpers';
 
 interface RavenButtonProps {
   children: string;
@@ -94,7 +95,7 @@ export const RavenButton: React.FC<RavenButtonProps> = React.memo(({
     <TouchableOpacity
       style={buttonStyle}
       onPress={onPress}
-      disabled={Boolean(disabled)}
+      disabled={parseBoolean(disabled)}
       activeOpacity={0.9}
       accessible={true}
       accessibilityRole="button"

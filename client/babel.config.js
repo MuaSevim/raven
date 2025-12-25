@@ -3,15 +3,9 @@ module.exports = function (api) {
   return {
     presets: ['babel-preset-expo'],
     plugins: [
-      [
-        '@tamagui/babel-plugin',
-        {
-          components: ['tamagui'],
-          config: './src/config/tamagui.config.ts',
-          logTimings: true,
-          disableExtraction: true, // Disable static extraction to avoid config parsing issues
-        },
-      ],
+      // Tamagui babel plugin disabled due to React 19 compatibility issues
+      // The plugin's static extraction uses react-dom internals incompatible with React 19
+      // Tamagui still works without the plugin, just without build-time optimizations
       // 'react-native-reanimated/plugin', // Add this later if you use Reanimated
     ],
   };

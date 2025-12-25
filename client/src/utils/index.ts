@@ -34,6 +34,16 @@ export {
   getDisabledOpacity,
 } from './themeHelpers';
 
+// Data helpers (type-safe conversions)
+export {
+  parseBoolean,
+  parseNumber,
+  parseString,
+  clamp,
+  formatPrice,
+  truncateText,
+} from './dataHelpers';
+
 // Legacy exports (for backward compatibility)
 export {
   isValidEmail,

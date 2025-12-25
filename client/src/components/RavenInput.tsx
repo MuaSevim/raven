@@ -7,6 +7,7 @@ import {
   RAVEN_DIMENSIONS,
   RAVEN_TYPOGRAPHY,
 } from '../config/theme.config';
+import { parseBoolean } from '../utils/dataHelpers';
 
 interface RavenInputProps {
   label?: string;
@@ -54,13 +55,13 @@ export const RavenInput: React.FC<RavenInputProps> = React.memo(({
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
-        secureTextEntry={Boolean(secureTextEntry)}
+        secureTextEntry={parseBoolean(secureTextEntry)}
         keyboardType={keyboardType}
         autoCapitalize={autoCapitalize}
-        autoCorrect={Boolean(autoCorrect)}
+        autoCorrect={parseBoolean(autoCorrect)}
         autoComplete="off"
         spellCheck={false}
-        editable={Boolean(editable)}
+        editable={parseBoolean(editable)}
         maxLength={maxLength}
         placeholderTextColor={RAVEN_LIGHT.inputPlaceholder}
         style={styles.input}
